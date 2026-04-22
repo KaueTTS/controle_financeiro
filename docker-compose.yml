@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: ./server
+    container_name: controle-financeiro-api
+    environment:
+      PORT: 8080
+      DATABASE_URL: /app/data/transactions.db
+      FRONTEND_CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "8080:8080"
+    volumes:
+      - api_data:/app/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+    container_name: controle-financeiro-web
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  api_data:
