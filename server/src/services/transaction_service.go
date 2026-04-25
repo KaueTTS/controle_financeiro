@@ -5,6 +5,7 @@ import (
 	"controle_financeiro/src/api/v1/dto"
 	"controle_financeiro/src/models"
 	repository_interfaces "controle_financeiro/src/repositories/interfaces"
+	common "controle_financeiro/src/utils/common"
 )
 
 type TransactionService struct {
@@ -44,11 +45,11 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.T
 
 func (s *TransactionService) CreateTransaction(ctx context.Context, request dto.TransactionRequestDto) error {
 	amount := request.Amount
-	transactionType := "income"
+	transactionType := common.TransactionTypeIncome
 
-	if request.Type == "expense" {
+	if request.Type == common.TransactionTypeExpense {
 		amount = -request.Amount
-		transactionType = "expense"
+		transactionType = common.TransactionTypeExpense
 	}
 
 	transaction := models.Transaction{
@@ -64,4 +65,24 @@ func (s *TransactionService) CreateTransaction(ctx context.Context, request dto.
 
 func (s *TransactionService) DeleteTransaction(ctx context.Context, id uint) error {
 	return s.SqliteTransactionRepositoryInterface.DeleteTransaction(ctx, id)
+}
+
+func (s *TransactionService) UpdateTransaction(ctx context.Context, id uint, request dto.TransactionRequestDto) error {
+	amount := request.Amount
+	transactionType := common.TransactionTypeIncome
+
+	if request.Type == common.TransactionTypeExpense {
+		amount = -request.Amount
+		transactionType = common.TransactionTypeExpense
+	}
+
+	transaction := models.Transaction{
+		Title:       request.Title,
+		Description: request.Description,
+		Amount:      amount,
+		Type:        transactionType,
+		Category:    request.Category,
+	}
+
+	return s.SqliteTransactionRepositoryInterface.UpdateTransaction(ctx, id, transaction)
 }

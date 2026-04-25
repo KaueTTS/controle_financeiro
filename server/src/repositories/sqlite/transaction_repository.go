@@ -4,6 +4,7 @@ import (
 	"context"
 	"controle_financeiro/src/api/v1/dto"
 	"controle_financeiro/src/models"
+	utils_errors "controle_financeiro/src/utils/errors"
 
 	"gorm.io/gorm"
 )
@@ -51,5 +52,34 @@ func (r *TransactionRepository) CreateTransaction(ctx context.Context, transacti
 }
 
 func (r *TransactionRepository) DeleteTransaction(ctx context.Context, id uint) error {
-	return r.db.WithContext(ctx).Delete(&models.Transaction{}, "id = ?", id).Error
+	result := r.db.WithContext(ctx).
+		Where("id = ?", id).
+		Delete(&models.Transaction{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return utils_errors.ErrTransactionNotFound
+	}
+
+	return nil
+}
+
+func (r *TransactionRepository) UpdateTransaction(ctx context.Context, id uint, transaction models.Transaction) error {
+	result := r.db.WithContext(ctx).
+		Model(&models.Transaction{}).
+		Where("id = ?", id).
+		Updates(transaction)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return utils_errors.ErrTransactionNotFound
+	}
+
+	return nil
 }

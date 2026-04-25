@@ -22,4 +22,5 @@ func Init(app *fiber.App) {
 	v1.Get("/transactions", transactionController.ListTransactions)
 	v1.Post("/transactions", transactionController.CreateTransaction)
 	v1.Delete("/transactions/:id", transactionController.DeleteTransaction)
+	v1.Put("/transactions/:id", transactionController.UpdateTransaction)
 }
