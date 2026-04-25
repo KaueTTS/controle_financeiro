@@ -22,9 +22,9 @@ func (s *SummaryService) GetSummary(ctx context.Context) (dto.SummaryResponseDto
 		return dto.SummaryResponseDto{}, err
 	}
 
-	var income float64
-	var expense float64
-	var balance float64
+	var income int64
+	var expense int64
+	var balance int64
 
 	for _, transaction := range transactions {
 		if transaction.Amount > 0 {

@@ -3,6 +3,9 @@ package controllers
 import (
 	"controle_financeiro/src/api/v1/dto"
 	servicesInterfaces "controle_financeiro/src/services/interfaces"
+	utils_errors "controle_financeiro/src/utils/errors"
+	resolvers "controle_financeiro/src/utils/resolvers"
+	"errors"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,10 +23,9 @@ func NewTransactionController(transactionService servicesInterfaces.TransactionS
 
 func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 	var filters dto.TransactionFilterDto
-
 	if err := ctx.QueryParser(&filters); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "query params inválidos",
+			"error": err.Error(),
 		})
 	}
 
@@ -49,27 +51,22 @@ func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 
 	if request.Title == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "title é obrigatório",
+			"error": utils_errors.TitleRequired,
 		})
 	}
-	if request.Description == "" {
+	if request.Amount <= 0 {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "description é obrigatório",
-		})
-	}
-	if request.Amount == 0 {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "amount não pode ser zero",
+			"error": utils_errors.AmountRequired,
 		})
 	}
 	if request.Category == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "category é obrigatório",
+			"error": utils_errors.CategoryRequired,
 		})
 	}
 	if request.Type != "income" && request.Type != "expense" {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "type deve ser income ou expense",
+			"error": utils_errors.TypeInvalid,
 		})
 	}
 
@@ -80,7 +77,7 @@ func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 		})
 	}
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "transação criada com sucesso",
+		"message": resolvers.TransactionCreated,
 	})
 }
 
@@ -90,15 +87,77 @@ func (c *TransactionController) DeleteTransaction(ctx *fiber.Ctx) error {
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "id inválido",
+			"error": utils_errors.IdInvalid,
 		})
 	}
 
 	err = c.transactionService.DeleteTransaction(ctx.UserContext(), uint(id))
 	if err != nil {
+		if errors.Is(err, utils_errors.ErrTransactionNotFound) {
+			return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": utils_errors.TransactionNotFound,
+			})
+		}
+
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 	return ctx.SendStatus(fiber.StatusNoContent)
+}
+
+func (c *TransactionController) UpdateTransaction(ctx *fiber.Ctx) error {
+	idStr := ctx.Params("id")
+
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils_errors.IdInvalid,
+		})
+	}
+
+	var request dto.TransactionRequestDto
+	if err := ctx.BodyParser(&request); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	if request.Title == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils_errors.TitleRequired,
+		})
+	}
+	if request.Amount <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils_errors.AmountRequired,
+		})
+	}
+	if request.Category == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils_errors.CategoryRequired,
+		})
+	}
+	if request.Type != "income" && request.Type != "expense" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils_errors.TypeInvalid,
+		})
+	}
+
+	err = c.transactionService.UpdateTransaction(ctx.UserContext(), uint(id), request)
+	if err != nil {
+		if errors.Is(err, utils_errors.ErrTransactionNotFound) {
+			return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": utils_errors.TransactionNotFound,
+			})
+		}
+
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": resolvers.TransactionUpdated,
+	})
 }

@@ -54,7 +54,6 @@ export function TransactionForm({ open, loading, onClose, onSubmit }: Transactio
           />
 
           <input
-            required
             value={form.description}
             onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
             placeholder="Descrição"

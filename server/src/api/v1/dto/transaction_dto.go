@@ -4,8 +4,8 @@ import "time"
 
 type TransactionRequestDto struct {
 	Title       string  `json:"title"`
-	Description string  `json:"description"`
-	Amount      float64 `json:"amount"`
+	Description *string `json:"description,omitempty"`
+	Amount      int64   `json:"amount"`
 	Category    string  `json:"category"`
 	Type        string  `json:"type"`
 }
@@ -13,8 +13,8 @@ type TransactionRequestDto struct {
 type TransactionResponseDto struct {
 	ID          uint      `json:"id"`
 	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Amount      float64   `json:"amount"`
+	Description *string   `json:"description,omitempty"`
+	Amount      int64     `json:"amount"`
 	Category    string    `json:"category"`
 	Type        string    `json:"type"`
 	CreatedAt   time.Time `json:"created_at"`
