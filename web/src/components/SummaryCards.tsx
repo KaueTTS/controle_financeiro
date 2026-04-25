@@ -5,17 +5,17 @@ interface SummaryCardsProps {
 }
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'BRL',
   }).format(value)
 }
 
 export function SummaryCards({ summary }: SummaryCardsProps) {
   const cards = [
-    { label: 'Income', value: summary.income },
-    { label: 'Expenses', value: summary.expense },
-    { label: 'Balance', value: summary.balance },
+    { label: 'Renda', value: summary.income },
+    { label: 'Despesa', value: summary.expense },
+    { label: 'Saldo', value: summary.balance },
   ]
 
   return (

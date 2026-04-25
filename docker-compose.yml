@@ -10,7 +10,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - api_data:/app/data
+      - ./data:/app/data
     restart: unless-stopped
 
   web:

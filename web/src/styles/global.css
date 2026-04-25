@@ -11,6 +11,7 @@
 body {
   margin: 0;
   min-height: 100vh;
+  line-height: 1.5;
   background: radial-gradient(circle at top, #1e293b, #020617 60%);
 }
 
@@ -37,14 +38,6 @@ button {
   gap: 24px;
   align-items: flex-end;
   margin-bottom: 32px;
-}
-
-.eyebrow {
-  margin: 0 0 8px;
-  color: #38bdf8;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.8rem;
 }
 
 h1 {
@@ -114,10 +107,12 @@ select {
 
 .primary-button,
 .danger-button,
+.edit-button,
 .ghost-button,
 .type-selector button {
   border-radius: 12px;
   padding: 12px 16px;
+  margin: auto 0;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -132,10 +127,29 @@ select {
   color: #fecaca;
 }
 
+.edit-button {
+  background: rgba(59, 130, 246, 0.18);
+  color: #bfdbfe;
+}
+
 .ghost-button {
   background: transparent;
   border: 1px solid rgba(148, 163, 184, 0.2);
   color: #e2e8f0;
+}
+
+.primary-button:hover,
+.danger-button:hover,
+.edit-button:hover,
+.ghost-button:hover,
+.type-selector button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
 }
 
 .table-wrapper {
@@ -229,6 +243,13 @@ th {
 .type-selector button.active {
   border-color: #38bdf8;
   background: rgba(56, 189, 248, 0.15);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
 }
 
 @media (max-width: 768px) {

@@ -16,19 +16,19 @@ export async function fetchTransactions(filters: Filters) {
   if (filters.type) params.set('type', filters.type)
   if (filters.category) params.set('category', filters.category)
 
-  const response = await api.get<ApiResponse<Transaction[]>>(`/transactions?${params.toString()}`)
+  const response = await api.get<ApiResponse<Transaction[]>>(`/v1/transactions?${params.toString()}`)
   return response.data
 }
 
 export async function fetchSummary() {
-  const response = await api.get<ApiResponse<Summary>>('/summary')
+  const response = await api.get<ApiResponse<Summary>>('/v1/summary')
   return response.data
 }
 
 export async function createTransaction(payload: CreateTransactionPayload) {
-  await api.post<{ message: string }>('/transactions', payload)
+  await api.post<{ message: string }>('/v1/transactions', payload)
 }
 
 export async function deleteTransaction(id: string) {
-  await api.delete<void>(`/transactions/${id}`)
+  await api.delete<void>(`/v1/transactions/${id}`)
 }

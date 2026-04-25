@@ -63,12 +63,18 @@ Clique na imagem abaixo para assistir ao tutorial em vídeo!
 ```
 < INSTALADORES >
 
+Back-End:
+cd ./server
+go mod tidy
 
+Front-End:
+cd ./web
+npm install
 
 
 < INICIADORES >
 
-
+docker compose up --build
 
 ```
 

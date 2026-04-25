@@ -44,7 +44,7 @@ export function HomePage() {
       setTransactions(transactionItems ?? [])
       setSummary(summaryData ?? emptySummary)
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'Failed to load data')
+      setError(loadError instanceof Error ? loadError.message : 'Falha ao carregar dados')
     } finally {
       setIsLoading(false)
     }
@@ -61,7 +61,7 @@ export function HomePage() {
       setIsModalOpen(false)
       await loadData()
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Failed to save transaction')
+      setError(saveError instanceof Error ? saveError.message : 'Falha ao salvar transação')
     } finally {
       setIsSaving(false)
     }
@@ -72,7 +72,7 @@ export function HomePage() {
       await deleteTransaction(id)
       await loadData()
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : 'Failed to delete transaction')
+      setError(deleteError instanceof Error ? deleteError.message : 'Falha ao excluir transação')
     }
   }
 
@@ -80,10 +80,9 @@ export function HomePage() {
     <main className="page-shell">
       <header className="hero">
         <div>
-          <p className="eyebrow">Controle Financeiro</p>
           <h1>Controle Financeiro</h1>
           <p className="subtitle">
-            Solução orientada à produção com camadas limpas, validação, filtros e armazenamento persistente.
+            O controle financeiro é a base para uma vida mais tranquila e para a saúde de qualquer negócio.
           </p>
         </div>
         <button className="primary-button" onClick={() => setIsModalOpen(true)}>
