@@ -1,4 +1,4 @@
-<h1 align="center">Website de controle financeiro</h1>
+<h1 align="center">Controle Financeiro</h1>
 
 <p align="center">
 <img loading="lazy" src="https://img.shields.io/static/v1?label=STATUS&message=EM%20ANDAMENTO&color=blue&style=for-the-badge"/>
@@ -63,12 +63,18 @@ Clique na imagem abaixo para assistir ao tutorial em vídeo!
 ```
 < INSTALADORES >
 
+Back-End:
+cd ./server
+go mod tidy
 
+Front-End:
+cd ./web
+npm install
 
 
 < INICIADORES >
 
-
+docker compose up --build
 
 ```
 

@@ -11,22 +11,22 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
       <input
         value={filters.search}
         onChange={(event) => onChange({ ...filters, search: event.target.value })}
-        placeholder="Search by title or category"
+        placeholder="Pesquise por título ou descrição"
       />
 
       <select
         value={filters.type}
         onChange={(event) => onChange({ ...filters, type: event.target.value })}
       >
-        <option value="">All types</option>
-        <option value="income">Income</option>
-        <option value="expense">Expense</option>
+        <option value="">Todos os tipos</option>
+        <option value="income">Renda</option>
+        <option value="expense">Despesa</option>
       </select>
 
       <input
         value={filters.category}
         onChange={(event) => onChange({ ...filters, category: event.target.value })}
-        placeholder="Filter by category"
+        placeholder="Filtrar por categoria"
       />
     </div>
   )
