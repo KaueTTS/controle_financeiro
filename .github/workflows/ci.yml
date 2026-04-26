@@ -45,8 +45,24 @@ jobs:
             exit 1
           fi
 
-      - name: Rodar testes
-        run: go test ./... -v
+      - name: Rodar testes com coverage
+        run: go test ./... -v -coverprofile=coverage.out
+
+      - name: Validar coverage mínimo
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+          echo "Coverage total: ${COVERAGE}%"
+
+          MIN_COVERAGE=20
+
+          awk -v coverage="$COVERAGE" -v min="$MIN_COVERAGE" 'BEGIN {
+            if (coverage < min) {
+              printf "Coverage abaixo do mínimo permitido: %.2f%%\n", min
+              exit 1
+            }
+
+            printf "Coverage aprovado. Mínimo exigido: %.2f%%\n", min
+          }'
 
       - name: Build da aplicação
         run: go build -o finance-api .

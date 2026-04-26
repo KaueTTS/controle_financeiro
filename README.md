@@ -12,17 +12,22 @@
 - [Descrição do projeto](#descrição-do-projeto)
   - [Funcionalidades Principais](#funcionalidades-principais)
 - [Tecnologias](#tecnologias)
+- [Arquitetura](#arquitetura)
 - [Projeto em funcionamento](#projeto-em-funcionamento)
 - [Como utilizar o projeto](#como-utilizar-o-projeto)
 - [Colaboradores](#colaboradores)
 
 ## Descrição do projeto
 
-O projeto controle financeiro...
+O Controle Financeiro é uma aplicação web para gerenciamento de receitas e despesas pessoais.
+
+A aplicação permite que usuários registrem, visualizem e analisem suas transações financeiras, facilitando o controle do fluxo de caixa e a tomada de decisões financeiras.
 
 ### Funcionalidades Principais
 > ***Listar transações:*** ... <br>
-> ***Criar transações:*** ...
+> ***Criar transações:*** ... <br>
+> ***Deletar transações:*** ... <br>
+> ***Editar transações:*** ...
 
 O design do site é responsivo e intuitivo, permitindo que usuários de qualquer dispositivo acessem as informações de maneira rápida e eficiente.
 
@@ -49,6 +54,19 @@ O design do site é responsivo e intuitivo, permitindo que usuários de qualquer
   </div>
 </details>
 
+## Arquitetura
+
+Back-End:
+
+- Controller -> recebe requisições HTTP 
+- Service -> regras de negócio
+- Repository -> acesso a dados e APIs
+- DTOs -> transporte de dados entre camadas
+
+Front-End:
+
+- Components -> 
+- Pages -> 
 
 ## Projeto em funcionamento
 
@@ -75,6 +93,12 @@ npm install
 < INICIADORES >
 
 docker compose up --build
+
+< TESTES DE COVERAGE >
+
+No git bash, rode:
+go test ./... -v -coverprofile=coverage.out
+go tool cover -func=coverage.out
 
 ```
 
