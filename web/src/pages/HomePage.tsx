@@ -4,6 +4,7 @@ import { SummaryCards } from '../components/SummaryCards'
 import { TransactionForm } from '../components/TransactionForm'
 import { TransactionsTable } from '../components/TransactionsTable'
 import {
+  updateTransaction,
   createTransaction,
   deleteTransaction,
   fetchSummary,
@@ -31,6 +32,7 @@ export function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
@@ -54,11 +56,32 @@ export function HomePage() {
     void loadData()
   }, [loadData])
 
-  async function handleCreateTransaction(payload: CreateTransactionPayload) {
+  function openCreateModal() {
+    setSelectedTransaction(null)
+    setIsModalOpen(true)
+  }
+
+  function openEditModal(transaction: Transaction) {
+    setSelectedTransaction(transaction)
+    setIsModalOpen(true)
+  }
+
+  function closeModal() {
+    setIsModalOpen(false)
+    setSelectedTransaction(null)
+  }
+
+  async function handleSubmitTransaction(payload: CreateTransactionPayload) {
     try {
       setIsSaving(true)
-      await createTransaction(payload)
-      setIsModalOpen(false)
+
+      if (selectedTransaction) {
+        await updateTransaction(selectedTransaction.id, payload)
+      } else {
+        await createTransaction(payload)
+      }
+
+      closeModal()
       await loadData()
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : 'Falha ao salvar transação')
@@ -85,7 +108,7 @@ export function HomePage() {
             O controle financeiro é a base para uma vida mais tranquila e para a saúde de qualquer negócio.
           </p>
         </div>
-        <button className="primary-button" onClick={() => setIsModalOpen(true)}>
+        <button className="primary-button" onClick={openCreateModal}>
           Nova transação
         </button>
       </header>
@@ -98,14 +121,15 @@ export function HomePage() {
       {isLoading ? (
         <div className="empty-state">Carregando transações...</div>
       ) : (
-        <TransactionsTable transactions={transactions} onDelete={handleDeleteTransaction} />
+        <TransactionsTable transactions={transactions} onDelete={handleDeleteTransaction} onEdit={openEditModal} />
       )}
 
       <TransactionForm
         open={isModalOpen}
         loading={isSaving}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreateTransaction}
+        transaction={selectedTransaction}
+        onClose={closeModal}
+        onSubmit={handleSubmitTransaction}
       />
     </main>
   )

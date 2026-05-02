@@ -11,7 +11,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({ message: 'Unexpected error' }))
-    throw new Error(errorBody.message ?? 'Unexpected error')
+    throw new Error(errorBody.error ?? errorBody.message ?? 'Erro inesperado')
   }
 
   if (response.status === 204) {
@@ -29,4 +29,9 @@ export const api = {
       body: JSON.stringify(body),
     }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
+  put: <T>(path: string, body: unknown) =>
+    request<T>(path, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    }),
 }

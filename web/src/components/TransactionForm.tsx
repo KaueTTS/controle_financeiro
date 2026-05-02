@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import type { TransactionType } from '../types'
+import { useEffect, useState } from 'react'
+import type { Transaction, TransactionType } from '../types'
 import type { CreateTransactionPayload } from '../services/transactions'
 
 interface TransactionFormProps {
   open: boolean
   loading: boolean
+  transaction?: Transaction | null
   onClose: () => void
   onSubmit: (payload: CreateTransactionPayload) => Promise<void>
 }
@@ -17,8 +18,29 @@ const initialState: CreateTransactionPayload = {
   category: '',
 }
 
-export function TransactionForm({ open, loading, onClose, onSubmit }: TransactionFormProps) {
+function getInitialForm(transaction?: Transaction | null): CreateTransactionPayload {
+  if (!transaction) {
+    return initialState
+  }
+
+  return {
+    title: transaction.title,
+    description: transaction.description,
+    amount: transaction.amount,
+    type: transaction.type,
+    category: transaction.category,
+  }
+}
+
+export function TransactionForm({ open, loading, transaction, onClose, onSubmit }: TransactionFormProps) {
   const [form, setForm] = useState<CreateTransactionPayload>(initialState)
+  const isEditing = Boolean(transaction)
+
+  useEffect(() => {
+    if (open) {
+      setForm(getInitialForm(transaction))
+    }
+  }, [open, transaction])
 
   if (!open) {
     return null
@@ -27,7 +49,10 @@ export function TransactionForm({ open, loading, onClose, onSubmit }: Transactio
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     await onSubmit(form)
-    setForm(initialState)
+
+    if (!isEditing) {
+      setForm(initialState)
+    }
   }
 
   function updateType(type: TransactionType) {
@@ -38,7 +63,7 @@ export function TransactionForm({ open, loading, onClose, onSubmit }: Transactio
     <div className="modal-backdrop" role="presentation">
       <div className="modal">
         <div className="modal-header">
-          <h2>Nova transação</h2>
+          <h2>{isEditing ? 'Editar transação' : 'Nova transação'}</h2>
           <button type="button" className="ghost-button" onClick={onClose}>
             Fechar
           </button>
@@ -47,7 +72,7 @@ export function TransactionForm({ open, loading, onClose, onSubmit }: Transactio
         <form onSubmit={handleSubmit} className="form-grid">
           <input
             required
-            minLength={3}
+            minLength={2}
             value={form.title}
             onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
             placeholder="Título"
@@ -100,7 +125,7 @@ export function TransactionForm({ open, loading, onClose, onSubmit }: Transactio
           />
 
           <button type="submit" disabled={loading} className="primary-button">
-            {loading ? 'Salvando...' : 'Salvar transação'}
+            {loading ? 'Salvando...' : isEditing ? 'Salvar alterações' : 'Salvar transação'}
           </button>
         </form>
       </div>
