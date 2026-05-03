@@ -3,10 +3,12 @@ import type { Transaction } from '../types'
 interface TransactionsTableProps {
   transactions: Transaction[]
   onDelete: (id: string) => Promise<void>
+  onEdit: (transaction: Transaction) => void
 }
 
 function formatCurrency(value: number, type: string) {
-  const signed = type === 'expense' ? -value : value
+  const signed = type === 'expense' ? -Math.abs(value) : Math.abs(value)
+
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
@@ -29,7 +31,7 @@ function translateType(type: string) {
   return map[type] ?? type
 }
 
-export function TransactionsTable({ transactions, onDelete }: TransactionsTableProps) {
+export function TransactionsTable({ transactions, onDelete, onEdit }: TransactionsTableProps) {
   if (transactions.length === 0) {
     return <div className="empty-state">Sem transações para exibir.</div>
   }
@@ -64,10 +66,7 @@ export function TransactionsTable({ transactions, onDelete }: TransactionsTableP
                   <button className="danger-button" onClick={() => onDelete(transaction.id)}>
                     Deletar
                   </button>
-                  <button
-                    className="edit-button"
-                    onClick={() => alert('Funcionalidade de edição ainda não implementada')}
-                  >
+                  <button className="edit-button" onClick={() => onEdit(transaction)}>
                     Editar
                   </button>
                 </div>

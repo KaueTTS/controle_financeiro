@@ -32,3 +32,7 @@ export async function createTransaction(payload: CreateTransactionPayload) {
 export async function deleteTransaction(id: string) {
   await api.delete<void>(`/v1/transactions/${id}`)
 }
+
+export async function updateTransaction(id: string, payload: Partial<CreateTransactionPayload>) {
+  await api.put<{ message: string }>(`/v1/transactions/${id}`, payload)
+}
