@@ -4,7 +4,7 @@ import (
 	"context"
 	"controle_financeiro/src/api/v1/dto"
 	"controle_financeiro/src/models"
-	repository_interfaces "controle_financeiro/src/repositories/interfaces"
+	repository_interfaces "controle_financeiro/src/repositories/sqlite/interfaces"
 )
 
 type TransactionService struct {
@@ -19,15 +19,14 @@ func NewTransactionService(
 	}
 }
 
-func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.TransactionFilterDto) ([]dto.TransactionResponseDto, error) {
-	transaction, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
+func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]dto.TransactionResponseDto, error) {
+	transactionModel, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
 	if err != nil {
 		return nil, err
 	}
 
 	transactions := make([]dto.TransactionResponseDto, 0)
-
-	for _, transaction := range transaction {
+	for _, transaction := range transactionModel {
 		transactions = append(transactions, dto.TransactionResponseDto{
 			ID:          transaction.ID,
 			Title:       transaction.Title,

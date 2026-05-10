@@ -7,8 +7,10 @@ import (
 )
 
 type SqliteTransactionRepositoryInterface interface {
-	ListTransactions(ctx context.Context, filters dto.TransactionFilterDto) ([]models.Transaction, error)
+	ListTransactions(ctx context.Context, filters dto.FilterDto) ([]models.Transaction, error)
 	CreateTransaction(ctx context.Context, transaction models.Transaction) error
 	DeleteTransaction(ctx context.Context, id uint) error
 	UpdateTransaction(ctx context.Context, id uint, transaction models.Transaction) error
+
+	GetSummary(ctx context.Context) (dto.SummaryResponseDto, error)
 }

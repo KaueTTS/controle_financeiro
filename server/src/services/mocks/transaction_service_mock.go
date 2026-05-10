@@ -11,7 +11,7 @@ type TransactionServiceMock struct {
 	mock.Mock
 }
 
-func (m *TransactionServiceMock) ListTransactions(ctx context.Context, filters dto.TransactionFilterDto) ([]dto.TransactionResponseDto, error) {
+func (m *TransactionServiceMock) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]dto.TransactionResponseDto, error) {
 	args := m.Called(ctx, filters)
 
 	if args.Get(0) == nil {

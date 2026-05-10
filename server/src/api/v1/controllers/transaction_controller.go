@@ -3,6 +3,7 @@ package controllers
 import (
 	"controle_financeiro/src/api/v1/dto"
 	servicesInterfaces "controle_financeiro/src/services/interfaces"
+	"controle_financeiro/src/utils/common"
 	utils_errors "controle_financeiro/src/utils/errors"
 	resolvers "controle_financeiro/src/utils/resolvers"
 	"errors"
@@ -22,7 +23,7 @@ func NewTransactionController(transactionService servicesInterfaces.TransactionS
 }
 
 func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
-	var filters dto.TransactionFilterDto
+	var filters dto.FilterDto
 	if err := ctx.QueryParser(&filters); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
@@ -64,7 +65,7 @@ func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 			"error": utils_errors.CategoryRequired,
 		})
 	}
-	if request.Type != "income" && request.Type != "expense" {
+	if request.Type != common.TransactionTypeIncome && request.Type != common.TransactionTypeExpense {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": utils_errors.TypeInvalid,
 		})
@@ -138,7 +139,7 @@ func (c *TransactionController) UpdateTransaction(ctx *fiber.Ctx) error {
 			"error": utils_errors.CategoryRequired,
 		})
 	}
-	if request.Type != "income" && request.Type != "expense" {
+	if request.Type != common.TransactionTypeIncome && request.Type != common.TransactionTypeExpense {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": utils_errors.TypeInvalid,
 		})
