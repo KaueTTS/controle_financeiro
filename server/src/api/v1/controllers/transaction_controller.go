@@ -36,9 +36,7 @@ func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data": response,
-	})
+	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
 func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {

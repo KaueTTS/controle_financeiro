@@ -11,14 +11,10 @@ type TransactionServiceMock struct {
 	mock.Mock
 }
 
-func (m *TransactionServiceMock) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]dto.TransactionResponseDto, error) {
+func (m *TransactionServiceMock) ListTransactions(ctx context.Context, filters dto.FilterDto) (dto.TransactionResponseDto, error) {
 	args := m.Called(ctx, filters)
 
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-
-	return args.Get(0).([]dto.TransactionResponseDto), args.Error(1)
+	return args.Get(0).(dto.TransactionResponseDto), args.Error(1)
 }
 
 func (m *TransactionServiceMock) CreateTransaction(ctx context.Context, request dto.TransactionRequestDto) error {

@@ -20,8 +20,9 @@ func NewTransactionRepository(db *gorm.DB) *TransactionRepository {
 	}
 }
 
-func (r *TransactionRepository) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]models.Transaction, error) {
+func (r *TransactionRepository) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]models.Transaction, int64, error) {
 	var transactions []models.Transaction
+	var total int64
 
 	query := r.db.WithContext(ctx).Model(&models.Transaction{})
 
@@ -40,11 +41,21 @@ func (r *TransactionRepository) ListTransactions(ctx context.Context, filters dt
 		query = query.Where("type = ?", filters.Type)
 	}
 
-	if err := query.Order("created_at desc").Find(&transactions).Error; err != nil {
-		return nil, err
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
 
-	return transactions, nil
+	offset := (filters.Page - 1) * filters.PerPage
+
+	if err := query.
+		Order("created_at desc").
+		Limit(filters.PerPage).
+		Offset(offset).
+		Find(&transactions).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return transactions, total, nil
 }
 
 func (r *TransactionRepository) CreateTransaction(ctx context.Context, transaction models.Transaction) error {

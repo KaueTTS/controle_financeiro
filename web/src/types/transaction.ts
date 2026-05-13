@@ -7,7 +7,7 @@ export interface Transaction {
   amount: number;
   category: string;
   type: TransactionType;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface TransactionPayload {

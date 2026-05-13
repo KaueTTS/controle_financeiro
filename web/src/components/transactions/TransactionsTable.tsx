@@ -74,8 +74,8 @@ export function TransactionsTable({
                 {transaction.type === 'expense' ? '-' : '+'} {formatCurrency(transaction.amount)}
               </strong>
 
-              <time dateTime={transaction.created_at} data-label="Data">
-                {formatDate(transaction.created_at)}
+              <time dateTime={transaction.createdAt} data-label="Data">
+                {formatDate(transaction.createdAt)}
               </time>
 
               <div className="actions" data-label="Ações">

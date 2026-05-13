@@ -19,15 +19,27 @@ func NewTransactionService(
 	}
 }
 
-func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]dto.TransactionResponseDto, error) {
-	transactionModel, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
-	if err != nil {
-		return nil, err
+func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.FilterDto) (dto.TransactionResponseDto, error) {
+	if filters.Page <= 0 {
+		filters.Page = 1
 	}
 
-	transactions := make([]dto.TransactionResponseDto, 0)
+	if filters.PerPage <= 0 {
+		filters.PerPage = 10
+	}
+
+	if filters.PerPage > 100 {
+		filters.PerPage = 100
+	}
+
+	transactionModel, total, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
+	if err != nil {
+		return dto.TransactionResponseDto{}, err
+	}
+
+	transactions := make([]dto.TransactionDto, 0, len(transactionModel))
 	for _, transaction := range transactionModel {
-		transactions = append(transactions, dto.TransactionResponseDto{
+		transactions = append(transactions, dto.TransactionDto{
 			ID:          transaction.ID,
 			Title:       transaction.Title,
 			Description: transaction.Description,
@@ -38,7 +50,20 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.F
 		})
 	}
 
-	return transactions, nil
+	pageCount := int(total) / filters.PerPage
+	if int(total)%filters.PerPage != 0 {
+		pageCount++
+	}
+
+	return dto.TransactionResponseDto{
+		Pagination: dto.PaginationDto{
+			Page:      filters.Page,
+			PerPage:   filters.PerPage,
+			PageCount: pageCount,
+			Total:     total,
+		},
+		Data: transactions,
+	}, nil
 }
 
 func (s *TransactionService) CreateTransaction(ctx context.Context, request dto.TransactionRequestDto) error {
