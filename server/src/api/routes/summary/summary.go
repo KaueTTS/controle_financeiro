@@ -10,8 +10,8 @@ import (
 )
 
 func Init(app *fiber.App) {
-	transactionRepository := sqlite.NewTransactionRepository(sqliteConn.DB)
-	summaryService := services.NewSummaryService(transactionRepository)
+	summaryRepository := sqlite.NewSummaryRepository(sqliteConn.DB)
+	summaryService := services.NewSummaryService(summaryRepository)
 	summaryController := summaryControllers.NewSummaryController(summaryService)
 
 	v1 := app.Group("/v1")

@@ -1,6 +1,6 @@
 package resolvers
 
 const (
-	TransactionCreated = "transação criada com sucesso!"
-	TransactionUpdated = "transação atualizada com sucesso!"
+	TransactionCreated = "Transação criada com sucesso!"
+	TransactionUpdated = "Transação atualizada com sucesso!"
 )

@@ -4,6 +4,7 @@ import (
 	"controle_financeiro/src/api/v1/controllers"
 	"controle_financeiro/src/api/v1/dto"
 	services_mocks "controle_financeiro/src/services/mocks"
+	utils_errors "controle_financeiro/src/utils/errors"
 	"errors"
 	"io"
 	"net/http/httptest"
@@ -67,7 +68,8 @@ func TestGetSummary(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockSummaryService.AssertExpectations(t)

@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"controle_financeiro/src/api/v1/dto"
+	"controle_financeiro/src/api/v1/responses"
+	"controle_financeiro/src/api/v1/validators"
 	servicesInterfaces "controle_financeiro/src/services/interfaces"
 	"controle_financeiro/src/utils/common"
 	utils_errors "controle_financeiro/src/utils/errors"
@@ -25,56 +27,56 @@ func NewTransactionController(transactionService servicesInterfaces.TransactionS
 func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 	var filters dto.FilterDto
 	if err := ctx.QueryParser(&filters); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.BadRequest(
+			ctx,
+			utils_errors.InvalidRequestMessage,
+			[]dto.DetailErrorDto{
+				{
+					Field:   "",
+					Value:   "",
+					Message: err.Error(),
+				},
+			},
+		)
 	}
 
 	response, err := c.transactionService.ListTransactions(ctx.UserContext(), filters)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.InternalServerError(ctx, utils_errors.InternalServerErrorMessage)
 	}
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
 func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 	var request dto.TransactionRequestDto
-
 	if err := ctx.BodyParser(&request); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.BadRequest(
+			ctx,
+			utils_errors.InvalidRequestMessage,
+			[]dto.DetailErrorDto{
+				{
+					Field:   "",
+					Value:   "",
+					Message: err.Error(),
+				},
+			},
+		)
 	}
 
-	if request.Title == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.TitleRequired,
-		})
-	}
-	if request.Amount <= 0 {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.AmountRequired,
-		})
-	}
-	if request.Category == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.CategoryRequired,
-		})
-	}
-	if request.Type != common.TransactionTypeIncome && request.Type != common.TransactionTypeExpense {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.TypeInvalid,
-		})
+	validationErrors := validators.ValidateTransactionRequest(request)
+	if len(validationErrors) > 0 {
+		return responses.BadRequest(
+			ctx,
+			utils_errors.MandatoryFieldMessage,
+			validationErrors,
+		)
 	}
 
 	err := c.transactionService.CreateTransaction(ctx.UserContext(), request)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.InternalServerError(ctx, utils_errors.InternalServerErrorMessage)
 	}
+
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": resolvers.TransactionCreated,
 	})
@@ -82,78 +84,80 @@ func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 
 func (c *TransactionController) DeleteTransaction(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
-
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.IdInvalid,
-		})
+		return responses.BadRequest(
+			ctx,
+			utils_errors.MandatoryFieldMessage,
+			[]dto.DetailErrorDto{
+				{
+					Field:   common.Id,
+					Value:   common.Invalid,
+					Message: utils_errors.IdInvalid,
+				},
+			},
+		)
 	}
 
 	err = c.transactionService.DeleteTransaction(ctx.UserContext(), uint(id))
 	if err != nil {
 		if errors.Is(err, utils_errors.ErrTransactionNotFound) {
-			return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": utils_errors.TransactionNotFound,
-			})
+			return responses.NotFound(ctx, utils_errors.TransactionNotFoundMessage)
 		}
 
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.InternalServerError(ctx, utils_errors.InternalServerErrorMessage)
 	}
 	return ctx.SendStatus(fiber.StatusNoContent)
 }
 
 func (c *TransactionController) UpdateTransaction(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
-
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.IdInvalid,
-		})
+		return responses.BadRequest(
+			ctx,
+			utils_errors.MandatoryFieldMessage,
+			[]dto.DetailErrorDto{
+				{
+					Field:   common.Id,
+					Value:   common.Invalid,
+					Message: utils_errors.IdInvalid,
+				},
+			},
+		)
 	}
 
 	var request dto.TransactionRequestDto
 	if err := ctx.BodyParser(&request); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.BadRequest(
+			ctx,
+			utils_errors.InvalidRequestMessage,
+			[]dto.DetailErrorDto{
+				{
+					Field:   "",
+					Value:   "",
+					Message: err.Error(),
+				},
+			},
+		)
 	}
 
-	if request.Title == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.TitleRequired,
-		})
-	}
-	if request.Amount <= 0 {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.AmountRequired,
-		})
-	}
-	if request.Category == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.CategoryRequired,
-		})
-	}
-	if request.Type != common.TransactionTypeIncome && request.Type != common.TransactionTypeExpense {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils_errors.TypeInvalid,
-		})
+	validationErrors := validators.ValidateTransactionRequest(request)
+	if len(validationErrors) > 0 {
+		return responses.BadRequest(
+			ctx,
+			utils_errors.MandatoryFieldMessage,
+			validationErrors,
+		)
 	}
 
 	err = c.transactionService.UpdateTransaction(ctx.UserContext(), uint(id), request)
 	if err != nil {
 		if errors.Is(err, utils_errors.ErrTransactionNotFound) {
-			return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": utils_errors.TransactionNotFound,
-			})
+			return responses.NotFound(ctx, utils_errors.TransactionNotFoundMessage)
 		}
 
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.InternalServerError(ctx, utils_errors.InternalServerErrorMessage)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{

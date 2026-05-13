@@ -9,5 +9,8 @@ const (
 )
 
 const (
-	TransactionNotFound = "transação não encontrada."
+	MandatoryFieldMessage      = "Existem campos inválidos na requisição."
+	InternalServerErrorMessage = "Erro interno ao processar a requisição."
+	TransactionNotFoundMessage = "Transação não encontrada."
+	InvalidRequestMessage      = "Requisição inválida."
 )

@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"controle_financeiro/src/api/v1/responses"
 	servicesInterfaces "controle_financeiro/src/services/interfaces"
+	utils_errors "controle_financeiro/src/utils/errors"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,9 +21,7 @@ func NewSummaryController(summaryService servicesInterfaces.SummaryServiceInterf
 func (c *SummaryController) GetSummary(ctx *fiber.Ctx) error {
 	response, err := c.summaryService.GetSummary(ctx.UserContext())
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return responses.InternalServerError(ctx, utils_errors.InternalServerErrorMessage)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{

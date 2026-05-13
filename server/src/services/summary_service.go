@@ -7,15 +7,15 @@ import (
 )
 
 type SummaryService struct {
-	SqliteTransactionRepositoryInterface repository_interfaces.SqliteTransactionRepositoryInterface
+	SqliteSummaryRepositoryInterface repository_interfaces.SqliteSummaryRepositoryInterface
 }
 
-func NewSummaryService(sqliteTransactionRepositoryInterface repository_interfaces.SqliteTransactionRepositoryInterface) *SummaryService {
+func NewSummaryService(sqliteSummaryRepositoryInterface repository_interfaces.SqliteSummaryRepositoryInterface) *SummaryService {
 	return &SummaryService{
-		SqliteTransactionRepositoryInterface: sqliteTransactionRepositoryInterface,
+		SqliteSummaryRepositoryInterface: sqliteSummaryRepositoryInterface,
 	}
 }
 
 func (s *SummaryService) GetSummary(ctx context.Context) (dto.SummaryResponseDto, error) {
-	return s.SqliteTransactionRepositoryInterface.GetSummary(ctx)
+	return s.SqliteSummaryRepositoryInterface.GetSummary(ctx)
 }

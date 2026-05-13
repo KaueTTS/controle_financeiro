@@ -11,6 +11,4 @@ type SqliteTransactionRepositoryInterface interface {
 	CreateTransaction(ctx context.Context, transaction models.Transaction) error
 	DeleteTransaction(ctx context.Context, id uint) error
 	UpdateTransaction(ctx context.Context, id uint, transaction models.Transaction) error
-
-	GetSummary(ctx context.Context) (dto.SummaryResponseDto, error)
 }

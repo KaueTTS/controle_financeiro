@@ -4,6 +4,7 @@ import (
 	"controle_financeiro/src/api/v1/controllers"
 	"controle_financeiro/src/api/v1/dto"
 	services_mocks "controle_financeiro/src/services/mocks"
+	"controle_financeiro/src/utils/common"
 	utils_errors "controle_financeiro/src/utils/errors"
 	resolvers "controle_financeiro/src/utils/resolvers"
 	"errors"
@@ -123,7 +124,8 @@ func TestListTransactions(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -192,7 +194,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TitleRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Title+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.TitleRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -225,7 +235,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.AmountRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Amount+`",
+				"value": "`+common.GreaterThanZero+`",
+				"message": "`+utils_errors.AmountRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -258,7 +276,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.CategoryRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Category+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.CategoryRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -291,7 +317,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TypeInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Type+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.TypeInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -326,7 +360,8 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -370,7 +405,15 @@ func TestDeleteTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.IdInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Id+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.IdInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "DeleteTransaction")
@@ -396,7 +439,8 @@ func TestDeleteTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TransactionNotFound+`"
+			"codeMessage": "`+utils_errors.NotFound+`",
+			"message": "`+utils_errors.TransactionNotFoundMessage+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -422,7 +466,8 @@ func TestDeleteTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -491,7 +536,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.IdInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Id+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.IdInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -524,9 +577,16 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TitleRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Title+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.TitleRequired+`"
+				}
+			]
 		}`, string(body))
-
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
 	})
 
@@ -557,7 +617,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.AmountRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Amount+`",
+				"value": "`+common.GreaterThanZero+`",
+				"message": "`+utils_errors.AmountRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -590,7 +658,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.CategoryRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Category+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.CategoryRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -623,7 +699,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TypeInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Type+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.TypeInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -658,7 +742,8 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TransactionNotFound+`"
+			"codeMessage": "`+utils_errors.NotFound+`",
+			"message": "`+utils_errors.TransactionNotFoundMessage+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -693,7 +778,8 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
