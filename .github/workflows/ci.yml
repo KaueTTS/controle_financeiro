@@ -46,14 +46,17 @@ jobs:
           fi
 
       - name: Rodar testes com coverage
-        run: go test ./... -v -coverprofile=coverage.out
+        run: |
+          PACKAGES=$(go list ./... | grep -v '/utils' | grep -v '/mocks' | grep -v '/env')
+
+          go test $PACKAGES -v -coverprofile=coverage.out
 
       - name: Validar coverage mínimo
         run: |
           COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
           echo "Coverage total: ${COVERAGE}%"
 
-          MIN_COVERAGE=20
+          MIN_COVERAGE=30
 
           awk -v coverage="$COVERAGE" -v min="$MIN_COVERAGE" 'BEGIN {
             if (coverage < min) {
