@@ -20,11 +20,12 @@ func run() error {
 		return fmt.Errorf("erro ao inicializar variáveis de ambiente: %w", err)
 	}
 
-	if err := sqlite_conn.Init(); err != nil {
+	db, err := sqlite_conn.Init()
+	if err != nil {
 		return fmt.Errorf("erro ao inicializar sqlite: %w", err)
 	}
 
-	if err := api.Init(); err != nil {
+	if err := api.Init(db); err != nil {
 		return fmt.Errorf("erro ao iniciar api: %w", err)
 	}
 

@@ -2,15 +2,15 @@ package routes
 
 import (
 	"controle_financeiro/src/api/v1/controllers"
-	sqliteConn "controle_financeiro/src/config/db/sqlite"
 	sqlite "controle_financeiro/src/repositories/sqlite"
 	"controle_financeiro/src/services"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-func Init(app *fiber.App) {
-	transactionRepository := sqlite.NewTransactionRepository(sqliteConn.DB)
+func Init(app *fiber.App, db *gorm.DB) {
+	transactionRepository := sqlite.NewTransactionRepository(db)
 
 	transactionService := services.NewTransactionService(
 		transactionRepository,

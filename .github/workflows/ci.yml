@@ -47,7 +47,7 @@ jobs:
 
       - name: Rodar testes com coverage
         run: |
-          PACKAGES=$(go list ./... | grep -v '/utils' | grep -v '/mocks' | grep -v '/env')
+          PACKAGES=$(go list ./... | grep -v '/utils' | grep -v '/mocks' | grep -v '/models')
 
           go test $PACKAGES -v -coverprofile=coverage.out
 

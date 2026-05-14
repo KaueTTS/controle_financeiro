@@ -3,6 +3,8 @@ package env
 import (
 	"fmt"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -13,6 +15,8 @@ var (
 )
 
 func Init() error {
+	_ = godotenv.Load()
+
 	Port = os.Getenv("PORT")
 	if Port == "" {
 		Port = "8080"
