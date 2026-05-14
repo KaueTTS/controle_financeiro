@@ -1,0 +1,167 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  dto.DetailErrorDto:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+      value:
+        type: string
+    type: object
+  dto.ErrorDto:
+    properties:
+      codeMessage:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/dto.DetailErrorDto'
+        type: array
+      message:
+        type: string
+    type: object
+  dto.PaginationDto:
+    properties:
+      page:
+        type: integer
+      pageCount:
+        type: integer
+      perPage:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dto.SummaryResponseDto:
+    properties:
+      balance:
+        type: number
+      expense:
+        type: number
+      income:
+        type: number
+    type: object
+  dto.TransactionDto:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  dto.TransactionResponseDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.TransactionDto'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationDto'
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: kauebertaze2004@gmai.com
+    name: KauêTTS
+  description: API do sistema de controle financeiro
+  title: Controle Financeiro API
+  version: "1.0"
+paths:
+  /v1/summary:
+    get:
+      description: Cálculo automático de entradas, saídas e saldo total
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SummaryResponseDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      summary: Retorna o resumo financeiro
+      tags:
+      - Summary
+  /v1/transactions:
+    get:
+      description: Visualização completa das movimentações financeiras cadastradas
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TransactionResponseDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      summary: Lista todas as transações
+      tags:
+      - Transaction
+    post:
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      tags:
+      - Transaction
+  /v1/transactions/:id:
+    delete:
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      tags:
+      - Transaction
+    put:
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorDto'
+      tags:
+      - Transaction
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"

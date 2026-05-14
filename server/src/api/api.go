@@ -7,8 +7,11 @@ import (
 	env "controle_financeiro/src/config/env"
 	"fmt"
 
+	_ "controle_financeiro/docs"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"gorm.io/gorm"
 )
 
@@ -20,6 +23,10 @@ func Init(db *gorm.DB) error {
 		AllowMethods: "*",
 		AllowHeaders: "*",
 	}))
+
+	if env.AppEnv != "prod" {
+		app.Get("/swagger/*", fiberSwagger.WrapHandler)
+	}
 
 	injectRoutes(app, db)
 

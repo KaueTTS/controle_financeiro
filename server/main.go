@@ -7,8 +7,24 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2/log"
+
+	_ "controle_financeiro/docs"
 )
 
+// @title Controle Financeiro API
+// @version 1.0
+// @description API do sistema de controle financeiro
+
+// @contact.name KauêTTS
+// @contact.email kauebertaze2004@gmai.com
+
+// @accept json
+// @produce json
+
+// @schemes http
+
+// @host localhost:8080
+// @BasePath /
 func main() {
 	if err := run(); err != nil {
 		log.Fatalf("falha ao iniciar aplicação: %v", err)

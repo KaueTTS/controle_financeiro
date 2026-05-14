@@ -18,6 +18,13 @@ func NewSummaryController(summaryService servicesInterfaces.SummaryServiceInterf
 	}
 }
 
+// GetSummary godoc
+// @Summary Retorna o resumo financeiro
+// @Description Cálculo automático de entradas, saídas e saldo total
+// @Tags Summary
+// @Success 200 {object} dto.SummaryResponseDto
+// @failure 500 {object} dto.ErrorDto
+// @Router /v1/summary [get]
 func (c *SummaryController) GetSummary(ctx *fiber.Ctx) error {
 	response, err := c.summaryService.GetSummary(ctx.UserContext())
 	if err != nil {

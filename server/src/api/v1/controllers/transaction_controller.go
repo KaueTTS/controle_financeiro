@@ -24,6 +24,14 @@ func NewTransactionController(transactionService servicesInterfaces.TransactionS
 	}
 }
 
+// ListTransactions godoc
+// @Summary Lista todas as transações
+// @Description Visualização completa das movimentações financeiras cadastradas
+// @Tags Transaction
+// @Success 200 {object} dto.TransactionResponseDto
+// @failure 400 {object} dto.ErrorDto
+// @failure 500 {object} dto.ErrorDto
+// @Router /v1/transactions [get]
 func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 	var filters dto.FilterDto
 	if err := ctx.QueryParser(&filters); err != nil {
@@ -47,6 +55,13 @@ func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
+// CreateTransaction godoc
+// @Summary
+// @Description
+// @Tags Transaction
+// @failure 400 {object} dto.ErrorDto
+// @failure 500 {object} dto.ErrorDto
+// @Router /v1/transactions [post]
 func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 	var request dto.TransactionRequestDto
 	if err := ctx.BodyParser(&request); err != nil {
@@ -82,6 +97,14 @@ func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 	})
 }
 
+// DeleteTransaction godoc
+// @Summary
+// @Description
+// @Tags Transaction
+// @failure 400 {object} dto.ErrorDto
+// @failure 404 {object} dto.ErrorDto
+// @failure 500 {object} dto.ErrorDto
+// @Router /v1/transactions/:id [delete]
 func (c *TransactionController) DeleteTransaction(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
@@ -110,6 +133,14 @@ func (c *TransactionController) DeleteTransaction(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusNoContent)
 }
 
+// UpdateTransaction godoc
+// @Summary
+// @Description
+// @Tags Transaction
+// @failure 400 {object} dto.ErrorDto
+// @failure 404 {object} dto.ErrorDto
+// @failure 500 {object} dto.ErrorDto
+// @Router /v1/transactions/:id [put]
 func (c *TransactionController) UpdateTransaction(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
