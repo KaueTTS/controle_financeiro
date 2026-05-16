@@ -63,6 +63,19 @@ definitions:
       updatedAt:
         type: string
     type: object
+  dto.TransactionRequestDto:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      description:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
   dto.TransactionResponseDto:
     properties:
       data:
@@ -71,6 +84,11 @@ definitions:
         type: array
       pagination:
         $ref: '#/definitions/dto.PaginationDto'
+    type: object
+  health.Health:
+    properties:
+      status:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -81,6 +99,19 @@ info:
   title: Controle Financeiro API
   version: "1.0"
 paths:
+  /health:
+    get:
+      description: Retorna o status de funcionamento da API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/health.Health'
+      summary: Verifica se a API está online
+      tags:
+      - Health
   /v1/summary:
     get:
       description: Cálculo automático de entradas, saídas e saldo total
@@ -99,6 +130,32 @@ paths:
   /v1/transactions:
     get:
       description: Visualização completa das movimentações financeiras cadastradas
+      parameters:
+      - description: 'Buscar por título ou descrição '
+        in: query
+        name: search
+        type: string
+      - description: Tipo da transação
+        enum:
+        - income
+        - expense
+        in: query
+        name: type
+        type: string
+      - description: Categoria da transação
+        in: query
+        name: category
+        type: string
+      - default: 1
+        description: Página atual
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Quantidade de registros por página
+        in: query
+        name: perPage
+        type: integer
       responses:
         "200":
           description: OK
@@ -116,7 +173,17 @@ paths:
       tags:
       - Transaction
     post:
+      description: Cadastro de receitas e despesas
+      parameters:
+      - description: Dados da transação
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TransactionRequestDto'
       responses:
+        "201":
+          description: Created
         "400":
           description: Bad Request
           schema:
@@ -125,11 +192,21 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorDto'
+      summary: Cadastrar transações
       tags:
       - Transaction
-  /v1/transactions/:id:
+  /v1/transactions/{id}:
     delete:
+      description: Remoção de transações cadastradas
+      parameters:
+      - description: ID da transação
+        in: path
+        name: id
+        required: true
+        type: integer
       responses:
+        "204":
+          description: No Content
         "400":
           description: Bad Request
           schema:
@@ -142,10 +219,26 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorDto'
+      summary: Deletar transação
       tags:
       - Transaction
     put:
+      description: Atualização de informações das transações
+      parameters:
+      - description: ID da transação
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados atualizados da transação
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TransactionRequestDto'
       responses:
+        "200":
+          description: OK
         "400":
           description: Bad Request
           schema:
@@ -158,6 +251,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorDto'
+      summary: Editar transação
       tags:
       - Transaction
 produces:

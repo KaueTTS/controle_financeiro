@@ -5,6 +5,7 @@ import (
 	"controle_financeiro/src/api/v1/dto"
 	"controle_financeiro/src/models"
 	repository_interfaces "controle_financeiro/src/repositories/sqlite/interfaces"
+	"time"
 )
 
 type TransactionService struct {
@@ -39,6 +40,11 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.F
 
 	transactions := make([]dto.TransactionDto, 0, len(transactionModel))
 	for _, transaction := range transactionModel {
+		var deletedAt *time.Time
+		if transaction.DeletedAt.Valid {
+			deletedAt = &transaction.DeletedAt.Time
+		}
+
 		transactions = append(transactions, dto.TransactionDto{
 			ID:          transaction.ID,
 			Title:       transaction.Title,
@@ -47,6 +53,8 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.F
 			Category:    transaction.Category,
 			Type:        transaction.Type,
 			CreatedAt:   transaction.CreatedAt,
+			UpdatedAt:   &transaction.UpdatedAt,
+			DeletedAt:   deletedAt,
 		})
 	}
 

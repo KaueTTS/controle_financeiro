@@ -9,9 +9,10 @@ import (
 
 	_ "controle_financeiro/docs"
 
+	swaggerRoute "controle_financeiro/src/api/routes/swagger"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"gorm.io/gorm"
 )
 
@@ -23,10 +24,6 @@ func Init(db *gorm.DB) error {
 		AllowMethods: "*",
 		AllowHeaders: "*",
 	}))
-
-	if env.AppEnv != "prod" {
-		app.Get("/swagger/*", fiberSwagger.WrapHandler)
-	}
 
 	injectRoutes(app, db)
 
@@ -40,6 +37,7 @@ func Init(db *gorm.DB) error {
 
 func injectRoutes(app *fiber.App, db *gorm.DB) {
 	healthRoute.Init(app)
+	swaggerRoute.Init(app)
 
 	transactionRoute.Init(app, db)
 	summaryRoute.Init(app, db)

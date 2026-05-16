@@ -28,9 +28,14 @@ func NewTransactionController(transactionService servicesInterfaces.TransactionS
 // @Summary Lista todas as transações
 // @Description Visualização completa das movimentações financeiras cadastradas
 // @Tags Transaction
+// @Param search query string false "Buscar por título ou descrição "
+// @Param type query string false "Tipo da transação" Enums(income, expense)
+// @Param category query string false "Categoria da transação"
+// @Param page query int false "Página atual" default(1)
+// @Param perPage query int false "Quantidade de registros por página" default(10)
 // @Success 200 {object} dto.TransactionResponseDto
-// @failure 400 {object} dto.ErrorDto
-// @failure 500 {object} dto.ErrorDto
+// @Failure 400 {object} dto.ErrorDto
+// @Failure 500 {object} dto.ErrorDto
 // @Router /v1/transactions [get]
 func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 	var filters dto.FilterDto
@@ -56,11 +61,13 @@ func (c *TransactionController) ListTransactions(ctx *fiber.Ctx) error {
 }
 
 // CreateTransaction godoc
-// @Summary
-// @Description
+// @Summary Cadastrar transações
+// @Description Cadastro de receitas e despesas
 // @Tags Transaction
-// @failure 400 {object} dto.ErrorDto
-// @failure 500 {object} dto.ErrorDto
+// @Param request body dto.TransactionRequestDto true "Dados da transação"
+// @Success 201
+// @Failure 400 {object} dto.ErrorDto
+// @Failure 500 {object} dto.ErrorDto
 // @Router /v1/transactions [post]
 func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 	var request dto.TransactionRequestDto
@@ -98,13 +105,15 @@ func (c *TransactionController) CreateTransaction(ctx *fiber.Ctx) error {
 }
 
 // DeleteTransaction godoc
-// @Summary
-// @Description
+// @Summary Deletar transação
+// @Description Remoção de transações cadastradas
 // @Tags Transaction
-// @failure 400 {object} dto.ErrorDto
-// @failure 404 {object} dto.ErrorDto
-// @failure 500 {object} dto.ErrorDto
-// @Router /v1/transactions/:id [delete]
+// @Param id path int true "ID da transação"
+// @Success 204 "No Content"
+// @Failure 400 {object} dto.ErrorDto
+// @Failure 404 {object} dto.ErrorDto
+// @Failure 500 {object} dto.ErrorDto
+// @Router /v1/transactions/{id} [delete]
 func (c *TransactionController) DeleteTransaction(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
@@ -134,13 +143,16 @@ func (c *TransactionController) DeleteTransaction(ctx *fiber.Ctx) error {
 }
 
 // UpdateTransaction godoc
-// @Summary
-// @Description
+// @Summary Editar transação
+// @Description Atualização de informações das transações
 // @Tags Transaction
-// @failure 400 {object} dto.ErrorDto
-// @failure 404 {object} dto.ErrorDto
-// @failure 500 {object} dto.ErrorDto
-// @Router /v1/transactions/:id [put]
+// @Param id path int true "ID da transação"
+// @Param request body dto.TransactionRequestDto true "Dados atualizados da transação"
+// @Success 200
+// @Failure 400 {object} dto.ErrorDto
+// @Failure 404 {object} dto.ErrorDto
+// @Failure 500 {object} dto.ErrorDto
+// @Router /v1/transactions/{id} [put]
 func (c *TransactionController) UpdateTransaction(ctx *fiber.Ctx) error {
 	idStr := ctx.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)

@@ -24,6 +24,26 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/health": {
+            "get": {
+                "description": "Retorna o status de funcionamento da API",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Verifica se a API está online",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/health.Health"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/summary": {
             "get": {
                 "description": "Cálculo automático de entradas, saídas e saldo total",
@@ -54,6 +74,44 @@ const docTemplate = `{
                     "Transaction"
                 ],
                 "summary": "Lista todas as transações",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Buscar por título ou descrição ",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "income",
+                            "expense"
+                        ],
+                        "type": "string",
+                        "description": "Tipo da transação",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Categoria da transação",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Página atual",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Quantidade de registros por página",
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -76,10 +134,26 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "description": "Cadastro de receitas e despesas",
                 "tags": [
                     "Transaction"
                 ],
+                "summary": "Cadastrar transações",
+                "parameters": [
+                    {
+                        "description": "Dados da transação",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TransactionRequestDto"
+                        }
+                    }
+                ],
                 "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -95,12 +169,35 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/transactions/:id": {
+        "/v1/transactions/{id}": {
             "put": {
+                "description": "Atualização de informações das transações",
                 "tags": [
                     "Transaction"
                 ],
+                "summary": "Editar transação",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da transação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados atualizados da transação",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TransactionRequestDto"
+                        }
+                    }
+                ],
                 "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -122,10 +219,24 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "description": "Remoção de transações cadastradas",
                 "tags": [
                     "Transaction"
                 ],
+                "summary": "Deletar transação",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da transação",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -243,6 +354,26 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.TransactionRequestDto": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.TransactionResponseDto": {
             "type": "object",
             "properties": {
@@ -254,6 +385,14 @@ const docTemplate = `{
                 },
                 "pagination": {
                     "$ref": "#/definitions/dto.PaginationDto"
+                }
+            }
+        },
+        "health.Health": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
                 }
             }
         }
