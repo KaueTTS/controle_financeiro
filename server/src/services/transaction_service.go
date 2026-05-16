@@ -4,7 +4,8 @@ import (
 	"context"
 	"controle_financeiro/src/api/v1/dto"
 	"controle_financeiro/src/models"
-	repository_interfaces "controle_financeiro/src/repositories/interfaces"
+	repository_interfaces "controle_financeiro/src/repositories/sqlite/interfaces"
+	"time"
 )
 
 type TransactionService struct {
@@ -19,16 +20,32 @@ func NewTransactionService(
 	}
 }
 
-func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.TransactionFilterDto) ([]dto.TransactionResponseDto, error) {
-	transaction, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
-	if err != nil {
-		return nil, err
+func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.FilterDto) (dto.TransactionResponseDto, error) {
+	if filters.Page <= 0 {
+		filters.Page = 1
 	}
 
-	transactions := make([]dto.TransactionResponseDto, 0)
+	if filters.PerPage <= 0 {
+		filters.PerPage = 10
+	}
 
-	for _, transaction := range transaction {
-		transactions = append(transactions, dto.TransactionResponseDto{
+	if filters.PerPage > 100 {
+		filters.PerPage = 100
+	}
+
+	transactionModel, total, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
+	if err != nil {
+		return dto.TransactionResponseDto{}, err
+	}
+
+	transactions := make([]dto.TransactionDto, 0, len(transactionModel))
+	for _, transaction := range transactionModel {
+		var deletedAt *time.Time
+		if transaction.DeletedAt.Valid {
+			deletedAt = &transaction.DeletedAt.Time
+		}
+
+		transactions = append(transactions, dto.TransactionDto{
 			ID:          transaction.ID,
 			Title:       transaction.Title,
 			Description: transaction.Description,
@@ -36,10 +53,25 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.T
 			Category:    transaction.Category,
 			Type:        transaction.Type,
 			CreatedAt:   transaction.CreatedAt,
+			UpdatedAt:   &transaction.UpdatedAt,
+			DeletedAt:   deletedAt,
 		})
 	}
 
-	return transactions, nil
+	pageCount := int(total) / filters.PerPage
+	if int(total)%filters.PerPage != 0 {
+		pageCount++
+	}
+
+	return dto.TransactionResponseDto{
+		Pagination: dto.PaginationDto{
+			Page:      filters.Page,
+			PerPage:   filters.PerPage,
+			PageCount: pageCount,
+			Total:     total,
+		},
+		Data: transactions,
+	}, nil
 }
 
 func (s *TransactionService) CreateTransaction(ctx context.Context, request dto.TransactionRequestDto) error {

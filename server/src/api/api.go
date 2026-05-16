@@ -7,11 +7,16 @@ import (
 	env "controle_financeiro/src/config/env"
 	"fmt"
 
+	_ "controle_financeiro/docs"
+
+	swaggerRoute "controle_financeiro/src/api/routes/swagger"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"gorm.io/gorm"
 )
 
-func Init() error {
+func Init(db *gorm.DB) error {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
@@ -20,7 +25,7 @@ func Init() error {
 		AllowHeaders: "*",
 	}))
 
-	injectRoutes(app)
+	injectRoutes(app, db)
 
 	port := fmt.Sprintf(":%s", env.Port)
 	if err := app.Listen(port); err != nil {
@@ -30,8 +35,10 @@ func Init() error {
 	return nil
 }
 
-func injectRoutes(app *fiber.App) {
+func injectRoutes(app *fiber.App, db *gorm.DB) {
 	healthRoute.Init(app)
-	transactionRoute.Init(app)
-	summaryRoute.Init(app)
+	swaggerRoute.Init(app)
+
+	transactionRoute.Init(app, db)
+	summaryRoute.Init(app, db)
 }

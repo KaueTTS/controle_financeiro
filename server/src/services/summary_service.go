@@ -3,42 +3,19 @@ package services
 import (
 	"context"
 	"controle_financeiro/src/api/v1/dto"
-	repository_interfaces "controle_financeiro/src/repositories/interfaces"
+	repository_interfaces "controle_financeiro/src/repositories/sqlite/interfaces"
 )
 
 type SummaryService struct {
-	SqliteTransactionRepositoryInterface repository_interfaces.SqliteTransactionRepositoryInterface
+	SqliteSummaryRepositoryInterface repository_interfaces.SqliteSummaryRepositoryInterface
 }
 
-func NewSummaryService(sqliteTransactionRepositoryInterface repository_interfaces.SqliteTransactionRepositoryInterface) *SummaryService {
+func NewSummaryService(sqliteSummaryRepositoryInterface repository_interfaces.SqliteSummaryRepositoryInterface) *SummaryService {
 	return &SummaryService{
-		SqliteTransactionRepositoryInterface: sqliteTransactionRepositoryInterface,
+		SqliteSummaryRepositoryInterface: sqliteSummaryRepositoryInterface,
 	}
 }
 
 func (s *SummaryService) GetSummary(ctx context.Context) (dto.SummaryResponseDto, error) {
-	transactions, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, dto.TransactionFilterDto{})
-	if err != nil {
-		return dto.SummaryResponseDto{}, err
-	}
-
-	var income float64
-	var expense float64
-	var balance float64
-
-	for _, transaction := range transactions {
-		if transaction.Type == "income" {
-			income += transaction.Amount
-		}
-
-		if transaction.Type == "expense" {
-			expense += transaction.Amount
-		}
-	}
-
-	return dto.SummaryResponseDto{
-		Income:  income,
-		Expense: expense,
-		Balance: balance,
-	}, nil
+	return s.SqliteSummaryRepositoryInterface.GetSummary(ctx)
 }

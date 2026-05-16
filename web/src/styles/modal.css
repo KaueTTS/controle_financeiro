@@ -1,0 +1,63 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(2, 6, 23, 0.62);
+  backdrop-filter: blur(12px);
+}
+
+.modal-card {
+  width: min(660px, 100%);
+  max-height: min(720px, calc(100vh - 36px));
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+  background: var(--surface-strong);
+  padding: 22px;
+}
+
+.confirm-dialog {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  width: min(520px, 100%);
+}
+
+.confirm-dialog-icon {
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--red);
+  background: var(--red-soft);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.confirm-dialog-content {
+  display: grid;
+  gap: 6px;
+}
+
+.confirm-dialog-content h2,
+.confirm-dialog-content p {
+  margin: 0;
+}
+
+.confirm-dialog-content h2 {
+  font-size: 1.35rem;
+  letter-spacing: -0.04em;
+}
+
+.confirm-dialog-content p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+  grid-column: 1 / -1;
+}

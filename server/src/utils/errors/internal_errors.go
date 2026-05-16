@@ -3,5 +3,5 @@ package errors
 import "errors"
 
 var (
-	ErrTransactionNotFound = errors.New(TransactionNotFound)
+	ErrTransactionNotFound = errors.New(TransactionNotFoundMessage)
 )

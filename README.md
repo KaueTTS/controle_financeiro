@@ -24,10 +24,12 @@ O Controle Financeiro é uma aplicação web para gerenciamento de receitas e de
 A aplicação permite que usuários registrem, visualizem e analisem suas transações financeiras, facilitando o controle do fluxo de caixa e a tomada de decisões financeiras.
 
 ### Funcionalidades Principais
-> ***Listar transações:*** ... <br>
-> ***Criar transações:*** ... <br>
-> ***Deletar transações:*** ... <br>
-> ***Editar transações:*** ...
+> ***Listar transações:*** Visualização completa das movimentações financeiras cadastradas. <br>
+> ***Criar transações:*** Cadastro de receitas e despesas. <br>
+> ***Deletar transações:*** Remoção de transações cadastradas. <br>
+> ***Editar transações:*** Atualização de informações das transações. <br>
+> ***Resumo financeiro:*** Cálculo automático de entradas, saídas e saldo total. <br>
+> ***Paginação e filtros:*** Busca e navegação otimizada entre transações.
 
 O design do site é responsivo e intuitivo, permitindo que usuários de qualquer dispositivo acessem as informações de maneira rápida e eficiente.
 
@@ -43,7 +45,14 @@ O design do site é responsivo e intuitivo, permitindo que usuários de qualquer
 <details closed>
 <summary>Back-End</summary>
   <div width="140px">
-      <img src="https://skillicons.dev/icons?i=go,sqlite,docker" />
+      <img src="https://skillicons.dev/icons?i=go,sqlite" />
+  </div>
+</details>
+
+<details closed>
+<summary>Infra</summary>
+  <div width="140px">
+      <img src="https://skillicons.dev/icons?i=docker" />
   </div>
 </details>
 
@@ -62,11 +71,15 @@ Back-End:
 - Service -> regras de negócio
 - Repository -> acesso a dados e APIs
 - DTOs -> transporte de dados entre camadas
+- Models -> representação das entidades
+- Config ->
 
 Front-End:
 
-- Components -> 
-- Pages -> 
+- Components -> componentes reutilizáveis
+- Hooks -> 
+- Styles -> estilizações
+
 
 ## Projeto em funcionamento
 
@@ -94,9 +107,11 @@ npm install
 
 docker compose up --build
 
+
 < TESTES DE COVERAGE >
 
 No git bash, rode:
+
 go test ./... -v -coverprofile=coverage.out
 go tool cover -func=coverage.out
 

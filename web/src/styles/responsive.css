@@ -1,0 +1,155 @@
+@media (max-width: 1040px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    width: min(100% - 22px, 1180px);
+    padding-top: 18px;
+  }
+
+  .topbar,
+  .section-title,
+  .table-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topbar-actions,
+  .topbar-actions .primary-button {
+    width: 100%;
+  }
+
+  .topbar-actions {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy strong {
+    font-size: clamp(2rem, 12vw, 3.65rem);
+  }
+
+  .transactions-list {
+    overflow-x: visible;
+  }
+
+  .transaction-row,
+  .transaction-row.table-head {
+    min-width: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .table-head {
+    display: none;
+  }
+
+  .transaction-row {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .transaction-row > *:not(.transaction-main):not(.actions) {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    justify-self: stretch;
+    text-align: right;
+  }
+
+  .transaction-row > *:not(.transaction-main):not(.actions)::before,
+  .actions::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .transaction-main {
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .transaction-main strong,
+  .transaction-main small {
+    white-space: normal;
+  }
+
+  .category-chip,
+  .pill {
+    margin-left: auto;
+  }
+
+  .amount {
+    text-align: right;
+  }
+
+  .actions {
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 3px;
+  }
+
+  .actions button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 16px, 1180px);
+  }
+
+  .hero-card,
+  .content-card,
+  .modal-card {
+    border-radius: 22px;
+  }
+
+  .hero-card,
+  .content-card {
+    padding: 14px;
+  }
+
+  .summary-grid,
+  .two-columns,
+  .type-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    min-height: auto;
+  }
+
+  .modal-backdrop {
+    align-items: end;
+    padding: 10px;
+  }
+
+  .modal-card {
+    max-height: calc(100vh - 20px);
+    padding: 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}

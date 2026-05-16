@@ -8,28 +8,26 @@ import (
 
 	"controle_financeiro/src/models"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func Init() error {
+func Init() (*gorm.DB, error) {
 	dir := filepath.Dir(env.DatabaseURL)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return fmt.Errorf("criar diretório do banco de dados: %w", err)
+		return nil, fmt.Errorf("erro ao criar diretório do banco de dados: %w", err)
 	}
 
 	db, err := gorm.Open(sqlite.Open(env.DatabaseURL), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("abrir banco de dados: %w", err)
+		return nil, fmt.Errorf("erro ao conectar no sqlite: %w", err)
 	}
 
-	if err := db.AutoMigrate(&models.Transaction{}); err != nil {
-		return fmt.Errorf("migrar banco de dados: %w", err)
+	if err := db.AutoMigrate(
+		&models.Transaction{},
+	); err != nil {
+		return nil, fmt.Errorf("erro ao migrar banco de dados: %w", err)
 	}
 
-	DB = db
-
-	return nil
+	return db, nil
 }

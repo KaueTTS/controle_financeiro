@@ -4,6 +4,7 @@ import (
 	"controle_financeiro/src/api/v1/controllers"
 	"controle_financeiro/src/api/v1/dto"
 	services_mocks "controle_financeiro/src/services/mocks"
+	"controle_financeiro/src/utils/common"
 	utils_errors "controle_financeiro/src/utils/errors"
 	resolvers "controle_financeiro/src/utils/resolvers"
 	"errors"
@@ -23,22 +24,34 @@ func TestListTransactions(t *testing.T) {
 		app := fiber.New()
 
 		mockTransactionService := new(services_mocks.TransactionServiceMock)
-		mockTransactionService.On("ListTransactions", mock.Anything, mock.Anything).Return([]dto.TransactionResponseDto{
-			{
-				ID:        1,
-				Title:     "Salary",
-				Amount:    5000,
-				Type:      "income",
-				Category:  "Emprego",
-				CreatedAt: time.Time{},
+		mockTransactionService.On("ListTransactions", mock.Anything, mock.Anything).Return(dto.TransactionResponseDto{
+			Pagination: dto.PaginationDto{
+				Page:      1,
+				PerPage:   10,
+				PageCount: 1,
+				Total:     2,
 			},
-			{
-				ID:        2,
-				Title:     "Groceries",
-				Amount:    200,
-				Type:      "expense",
-				Category:  "Alimentação",
-				CreatedAt: time.Time{},
+			Data: []dto.TransactionDto{
+				{
+					ID:        1,
+					Title:     "Salary",
+					Amount:    5000,
+					Type:      "income",
+					Category:  "Emprego",
+					CreatedAt: time.Time{},
+					UpdatedAt: nil,
+					DeletedAt: nil,
+				},
+				{
+					ID:        2,
+					Title:     "Groceries",
+					Amount:    200,
+					Type:      "expense",
+					Category:  "Alimentação",
+					CreatedAt: time.Time{},
+					UpdatedAt: nil,
+					DeletedAt: nil,
+				},
 			},
 		}, nil)
 
@@ -55,6 +68,12 @@ func TestListTransactions(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
+			"pagination": {
+				"page": 1,
+				"perPage": 10,
+				"pageCount": 1,
+				"total": 2
+			},
 			"data": [
 				{
 					"id": 1,
@@ -62,7 +81,9 @@ func TestListTransactions(t *testing.T) {
 					"amount": 5000,
 					"type": "income",
 					"category": "Emprego",
-					"created_at": "0001-01-01T00:00:00Z"
+					"createdAt": "0001-01-01T00:00:00Z",
+					"updatedAt": null,
+					"deletedAt": null
 				},
 				{
 					"id": 2,
@@ -70,7 +91,9 @@ func TestListTransactions(t *testing.T) {
 					"amount": 200,
 					"type": "expense",
 					"category": "Alimentação",
-					"created_at": "0001-01-01T00:00:00Z"
+					"createdAt": "0001-01-01T00:00:00Z",
+					"updatedAt": null,
+					"deletedAt": null
 				}
 			]
 		}`, string(body))
@@ -83,7 +106,10 @@ func TestListTransactions(t *testing.T) {
 
 		mockTransactionService := new(services_mocks.TransactionServiceMock)
 		mockTransactionService.On("ListTransactions", mock.Anything, mock.Anything).
-			Return([]dto.TransactionResponseDto{}, errors.New("internal error"))
+			Return(dto.TransactionResponseDto{
+				Data:       []dto.TransactionDto{},
+				Pagination: dto.PaginationDto{},
+			}, errors.New("internal error"))
 
 		controller := controllers.NewTransactionController(mockTransactionService)
 		app.Get("/transactions", controller.ListTransactions)
@@ -98,7 +124,8 @@ func TestListTransactions(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -167,7 +194,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TitleRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Title+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.TitleRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -200,7 +235,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.AmountRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Amount+`",
+				"value": "`+common.GreaterThanZero+`",
+				"message": "`+utils_errors.AmountRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -233,7 +276,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.CategoryRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Category+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.CategoryRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -266,7 +317,15 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TypeInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Type+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.TypeInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "CreateTransaction")
@@ -301,7 +360,8 @@ func TestCreateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -345,7 +405,15 @@ func TestDeleteTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.IdInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Id+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.IdInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "DeleteTransaction")
@@ -371,7 +439,8 @@ func TestDeleteTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TransactionNotFound+`"
+			"codeMessage": "`+utils_errors.NotFound+`",
+			"message": "`+utils_errors.TransactionNotFoundMessage+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -397,7 +466,8 @@ func TestDeleteTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -466,7 +536,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.IdInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Id+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.IdInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -499,9 +577,16 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TitleRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Title+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.TitleRequired+`"
+				}
+			]
 		}`, string(body))
-
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
 	})
 
@@ -532,7 +617,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.AmountRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Amount+`",
+				"value": "`+common.GreaterThanZero+`",
+				"message": "`+utils_errors.AmountRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -565,7 +658,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.CategoryRequired+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Category+`",
+				"value": "`+common.Mandatory+`",
+				"message": "`+utils_errors.CategoryRequired+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -598,7 +699,15 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TypeInvalid+`"
+			"message": "`+utils_errors.MandatoryFieldMessage+`",
+			"codeMessage": "`+utils_errors.BadRequest+`",
+			"details": [
+				{
+				"field": "`+common.Type+`",
+				"value": "`+common.Invalid+`",
+				"message": "`+utils_errors.TypeInvalid+`"
+				}
+			]
 		}`, string(body))
 
 		mockTransactionService.AssertNotCalled(t, "UpdateTransaction")
@@ -633,7 +742,8 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "`+utils_errors.TransactionNotFound+`"
+			"codeMessage": "`+utils_errors.NotFound+`",
+			"message": "`+utils_errors.TransactionNotFoundMessage+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
@@ -668,7 +778,8 @@ func TestUpdateTransaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"error": "internal error"
+			"message": "`+utils_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+utils_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockTransactionService.AssertExpectations(t)
