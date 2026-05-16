@@ -37,7 +37,7 @@ export function TransactionFilters({
             type="text"
             placeholder="Título ou descrição"
             value={filters.search}
-            onChange={(event) => onChange({ ...filters, search: event.target.value })}
+            onChange={(event) => onChange({ ...filters, search: event.target.value, page: 1 })}
           />
         </div>
 
@@ -46,7 +46,7 @@ export function TransactionFilters({
           <select
             id="type"
             value={filters.type}
-            onChange={(event) => onChange({ ...filters, type: event.target.value as Filters['type'] })}
+            onChange={(event) => onChange({ ...filters, type: event.target.value as Filters['type'], page: 1 })}
           >
             <option value="">Todos</option>
             <option value="income">Receitas</option>
@@ -59,7 +59,7 @@ export function TransactionFilters({
           <select
             id="category"
             value={filters.category}
-            onChange={(event) => onChange({ ...filters, category: event.target.value })}
+            onChange={(event) => onChange({ ...filters, category: event.target.value, page: 1 })}
           >
             <option value="">Todas</option>
             {categories.map((category) => (

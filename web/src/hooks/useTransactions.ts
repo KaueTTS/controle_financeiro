@@ -4,11 +4,21 @@ import { createTransaction, deleteTransaction, listTransactions, updateTransacti
 import type { Summary } from '../types/summary';
 import type { Transaction, TransactionFilters, TransactionPayload } from '../types/transaction';
 import { getErrorMessage } from '../utils/errors';
+import type { Pagination } from '../types/api';
 
 const INITIAL_FILTERS: TransactionFilters = {
   search: '',
   type: '',
   category: '',
+  page: 1,
+  perPage: 10,
+};
+
+const EMPTY_PAGINATION: Pagination = {
+  page: 1,
+  perPage: 10,
+  pageCount: 0,
+  total: 0,
 };
 
 const EMPTY_SUMMARY: Summary = {
@@ -24,6 +34,7 @@ export function useTransactions() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<Pagination>(EMPTY_PAGINATION);
 
   const categories = useMemo(() => {
     return Array.from(new Set(transactions.map((transaction) => transaction.category))).sort();
@@ -41,7 +52,8 @@ export function useTransactions() {
         getSummary(filters),
       ]);
 
-      setTransactions(transactionsResponse);
+      setTransactions(transactionsResponse.data);
+      setPagination(transactionsResponse.pagination);
       setSummary(summaryResponse);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -98,6 +110,7 @@ export function useTransactions() {
     isDeleting,
     error,
     hasActiveFilters,
+    pagination,
     setFilters,
     clearFilters,
     saveTransaction,

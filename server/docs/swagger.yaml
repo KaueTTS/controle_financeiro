@@ -2,7 +2,7 @@ basePath: /
 consumes:
 - application/json
 definitions:
-  dto.DetailErrorDto:
+  dto_shared.DetailErrorDto:
     properties:
       field:
         type: string
@@ -11,18 +11,18 @@ definitions:
       value:
         type: string
     type: object
-  dto.ErrorDto:
+  dto_shared.ErrorDto:
     properties:
       codeMessage:
         type: string
       details:
         items:
-          $ref: '#/definitions/dto.DetailErrorDto'
+          $ref: '#/definitions/dto_shared.DetailErrorDto'
         type: array
       message:
         type: string
     type: object
-  dto.PaginationDto:
+  dto_shared.PaginationDto:
     properties:
       page:
         type: integer
@@ -33,7 +33,7 @@ definitions:
       total:
         type: integer
     type: object
-  dto.SummaryResponseDto:
+  dto_summary.SummaryResponseDto:
     properties:
       balance:
         type: number
@@ -42,7 +42,7 @@ definitions:
       income:
         type: number
     type: object
-  dto.TransactionDto:
+  dto_transaction.TransactionDto:
     properties:
       amount:
         type: number
@@ -63,7 +63,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  dto.TransactionRequestDto:
+  dto_transaction.TransactionRequestDto:
     properties:
       amount:
         type: number
@@ -76,14 +76,14 @@ definitions:
       type:
         type: string
     type: object
-  dto.TransactionResponseDto:
+  dto_transaction.TransactionResponseDto:
     properties:
       data:
         items:
-          $ref: '#/definitions/dto.TransactionDto'
+          $ref: '#/definitions/dto_transaction.TransactionDto'
         type: array
       pagination:
-        $ref: '#/definitions/dto.PaginationDto'
+        $ref: '#/definitions/dto_shared.PaginationDto'
     type: object
 host: localhost:8080
 info:
@@ -110,11 +110,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SummaryResponseDto'
+            $ref: '#/definitions/dto_summary.SummaryResponseDto'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
       summary: Retorna o resumo financeiro
       tags:
       - Summary
@@ -151,15 +151,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.TransactionResponseDto'
+            $ref: '#/definitions/dto_transaction.TransactionResponseDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
       summary: Lista todas as transações
       tags:
       - Transaction
@@ -171,18 +171,18 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.TransactionRequestDto'
+          $ref: '#/definitions/dto_transaction.TransactionRequestDto'
       responses:
         "201":
           description: Created
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
       summary: Cadastrar transações
       tags:
       - Transaction
@@ -201,15 +201,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
       summary: Deletar transação
       tags:
       - Transaction
@@ -226,22 +226,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.TransactionRequestDto'
+          $ref: '#/definitions/dto_transaction.TransactionRequestDto'
       responses:
         "200":
           description: OK
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorDto'
+            $ref: '#/definitions/dto_shared.ErrorDto'
       summary: Editar transação
       tags:
       - Transaction

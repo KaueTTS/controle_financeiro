@@ -1,4 +1,4 @@
-package errors
+package shared_errors
 
 const (
 	TitleRequired    = "title é obrigatório."

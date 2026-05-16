@@ -1,10 +1,10 @@
 package controllers_test
 
 import (
-	"controle_financeiro/src/api/v1/controllers"
-	"controle_financeiro/src/api/v1/dto"
-	services_mocks "controle_financeiro/src/services/mocks"
-	utils_errors "controle_financeiro/src/utils/errors"
+	controllers "controle_financeiro/src/api/v1/controllers"
+	dto_summary "controle_financeiro/src/api/v1/dto/summary"
+	services_mocks "controle_financeiro/src/mocks/services"
+	shared_errors "controle_financeiro/src/shared/errors"
 	"errors"
 	"io"
 	"net/http/httptest"
@@ -20,7 +20,7 @@ func TestGetSummary(t *testing.T) {
 		app := fiber.New()
 
 		mockSummaryService := new(services_mocks.SummaryServiceMock)
-		mockSummaryService.On("GetSummary", mock.Anything).Return(dto.SummaryResponseDto{
+		mockSummaryService.On("GetSummary", mock.Anything, dto_summary.SummaryFilterDto{}).Return(dto_summary.SummaryResponseDto{
 			Income:  1000,
 			Expense: 500,
 			Balance: 500,
@@ -53,7 +53,7 @@ func TestGetSummary(t *testing.T) {
 		app := fiber.New()
 
 		mockSummaryService := new(services_mocks.SummaryServiceMock)
-		mockSummaryService.On("GetSummary", mock.Anything).Return(dto.SummaryResponseDto{}, errors.New("internal error"))
+		mockSummaryService.On("GetSummary", mock.Anything, dto_summary.SummaryFilterDto{}).Return(dto_summary.SummaryResponseDto{}, errors.New("internal error"))
 
 		controller := controllers.NewSummaryController(mockSummaryService)
 		app.Get("/summary", controller.GetSummary)
@@ -68,8 +68,8 @@ func TestGetSummary(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.JSONEq(t, `{
-			"message": "`+utils_errors.InternalServerErrorMessage+`",
-			"codeMessage": "`+utils_errors.InternalServerError+`"
+			"message": "`+shared_errors.InternalServerErrorMessage+`",
+			"codeMessage": "`+shared_errors.InternalServerError+`"
 		}`, string(body))
 
 		mockSummaryService.AssertExpectations(t)

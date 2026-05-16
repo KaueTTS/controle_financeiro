@@ -2,9 +2,9 @@ package sqlite_repository
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	"controle_financeiro/src/models"
-	"controle_financeiro/src/utils/common"
+	dto_summary "controle_financeiro/src/api/v1/dto/summary"
+	models "controle_financeiro/src/models"
+	shared_constants "controle_financeiro/src/shared/constants"
 
 	"gorm.io/gorm"
 )
@@ -19,29 +19,37 @@ func NewSummaryRepository(db *gorm.DB) *SummaryRepository {
 	}
 }
 
-func (r *SummaryRepository) GetSummary(ctx context.Context) (dto.SummaryResponseDto, error) {
-	var income float64
-	var expense float64
+func (r *SummaryRepository) GetSummary(ctx context.Context, filters dto_summary.SummaryFilterDto) (dto_summary.SummaryResponseDto, error) {
+	var response dto_summary.SummaryResponseDto
 
-	if err := r.db.WithContext(ctx).
-		Model(&models.Transaction{}).
-		Where("type = ?", common.TransactionTypeIncome).
-		Select("COALESCE(SUM(amount), 0)").
-		Scan(&income).Error; err != nil {
-		return dto.SummaryResponseDto{}, err
+	query := r.db.WithContext(ctx).Model(&models.Transaction{})
+
+	if filters.Search != "" {
+		query = query.Where(
+			"title LIKE ? OR description LIKE ?",
+			"%"+filters.Search+"%",
+			"%"+filters.Search+"%",
+		)
 	}
 
-	if err := r.db.WithContext(ctx).
-		Model(&models.Transaction{}).
-		Where("type = ?", common.TransactionTypeExpense).
-		Select("COALESCE(SUM(amount), 0)").
-		Scan(&expense).Error; err != nil {
-		return dto.SummaryResponseDto{}, err
+	if filters.Category != "" {
+		query = query.Where("category = ?", filters.Category)
 	}
 
-	return dto.SummaryResponseDto{
-		Income:  income,
-		Expense: expense,
-		Balance: income - expense,
-	}, nil
+	if filters.Type != "" {
+		query = query.Where("type = ?", filters.Type)
+	}
+
+	if err := query.Select(
+		`COALESCE(SUM(CASE WHEN type = ? THEN amount ELSE 0 END), 0) AS income,
+		 COALESCE(SUM(CASE WHEN type = ? THEN amount ELSE 0 END), 0) AS expense`,
+		shared_constants.TransactionTypeIncome,
+		shared_constants.TransactionTypeExpense,
+	).Scan(&response).Error; err != nil {
+		return dto_summary.SummaryResponseDto{}, err
+	}
+
+	response.Balance = response.Income - response.Expense
+
+	return response, nil
 }

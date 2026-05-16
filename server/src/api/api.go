@@ -1,15 +1,13 @@
 package api
 
 import (
-	healthRoute "controle_financeiro/src/api/routes/health"
-	summaryRoute "controle_financeiro/src/api/routes/summary"
-	transactionRoute "controle_financeiro/src/api/routes/transactions"
+	_ "controle_financeiro/docs"
+	health_route "controle_financeiro/src/api/routes/health"
+	summary_route "controle_financeiro/src/api/routes/summary"
+	swagger_route "controle_financeiro/src/api/routes/swagger"
+	transaction_route "controle_financeiro/src/api/routes/transactions"
 	env "controle_financeiro/src/config/env"
 	"fmt"
-
-	_ "controle_financeiro/docs"
-
-	swaggerRoute "controle_financeiro/src/api/routes/swagger"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -20,9 +18,9 @@ func Init(db *gorm.DB) error {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: env.FrontendCorsOrigin,
-		AllowMethods: "*",
-		AllowHeaders: "*",
+		AllowOrigins: env.CorsOrigin,
+		AllowMethods: env.CorsMethod,
+		AllowHeaders: env.CorsHeader,
 	}))
 
 	injectRoutes(app, db)
@@ -36,9 +34,9 @@ func Init(db *gorm.DB) error {
 }
 
 func injectRoutes(app *fiber.App, db *gorm.DB) {
-	healthRoute.Init(app)
-	swaggerRoute.Init(app)
+	health_route.Init(app)
+	swagger_route.Init(app)
 
-	transactionRoute.Init(app, db)
-	summaryRoute.Init(app, db)
+	transaction_route.Init(app, db)
+	summary_route.Init(app, db)
 }

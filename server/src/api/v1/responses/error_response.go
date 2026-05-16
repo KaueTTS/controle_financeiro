@@ -1,30 +1,30 @@
 package responses
 
 import (
-	"controle_financeiro/src/api/v1/dto"
-	utils_errors "controle_financeiro/src/utils/errors"
+	dto_shared "controle_financeiro/src/api/v1/dto/shared"
+	shared_errors "controle_financeiro/src/shared/errors"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func BadRequest(ctx *fiber.Ctx, message string, details []dto.DetailErrorDto) error {
-	return ctx.Status(fiber.StatusBadRequest).JSON(dto.ErrorDto{
+func BadRequest(ctx *fiber.Ctx, message string, details []dto_shared.DetailErrorDto) error {
+	return ctx.Status(fiber.StatusBadRequest).JSON(dto_shared.ErrorDto{
 		Message:     message,
-		CodeMessage: utils_errors.BadRequest,
+		CodeMessage: shared_errors.BadRequest,
 		Details:     details,
 	})
 }
 
 func NotFound(ctx *fiber.Ctx, message string) error {
-	return ctx.Status(fiber.StatusNotFound).JSON(dto.ErrorDto{
+	return ctx.Status(fiber.StatusNotFound).JSON(dto_shared.ErrorDto{
 		Message:     message,
-		CodeMessage: utils_errors.NotFound,
+		CodeMessage: shared_errors.NotFound,
 	})
 }
 
 func InternalServerError(ctx *fiber.Ctx, message string) error {
-	return ctx.Status(fiber.StatusInternalServerError).JSON(dto.ErrorDto{
+	return ctx.Status(fiber.StatusInternalServerError).JSON(dto_shared.ErrorDto{
 		Message:     message,
-		CodeMessage: utils_errors.InternalServerError,
+		CodeMessage: shared_errors.InternalServerError,
 	})
 }

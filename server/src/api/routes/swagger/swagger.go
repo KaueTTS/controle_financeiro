@@ -1,7 +1,7 @@
-package swagger
+package routes
 
 import (
-	"controle_financeiro/src/config/env"
+	env "controle_financeiro/src/config/env"
 
 	"github.com/gofiber/fiber/v2"
 	fiberSwagger "github.com/swaggo/fiber-swagger"

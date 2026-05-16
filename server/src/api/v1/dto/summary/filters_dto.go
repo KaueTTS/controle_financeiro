@@ -1,9 +1,7 @@
-package dto
+package dto_summary
 
-type FilterDto struct {
+type SummaryFilterDto struct {
 	Search   string `query:"search"`
 	Type     string `query:"type"`
 	Category string `query:"category"`
-	Page     int    `query:"page"`
-	PerPage  int    `query:"perPage"`
 }

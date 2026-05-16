@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"controle_financeiro/src/api/v1/controllers"
+	controllers "controle_financeiro/src/api/v1/controllers"
 	sqlite "controle_financeiro/src/repositories/sqlite"
-	"controle_financeiro/src/services"
+	services "controle_financeiro/src/services"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -11,11 +11,7 @@ import (
 
 func Init(app *fiber.App, db *gorm.DB) {
 	transactionRepository := sqlite.NewTransactionRepository(db)
-
-	transactionService := services.NewTransactionService(
-		transactionRepository,
-	)
-
+	transactionService := services.NewTransactionService(transactionRepository)
 	transactionController := controllers.NewTransactionController(transactionService)
 
 	v1 := app.Group("/v1")

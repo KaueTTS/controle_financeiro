@@ -1,4 +1,4 @@
-package dto
+package dto_summary
 
 type SummaryResponseDto struct {
 	Income  float64 `json:"income"`
