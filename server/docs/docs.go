@@ -27,19 +27,13 @@ const docTemplate = `{
         "/health": {
             "get": {
                 "description": "Retorna o status de funcionamento da API",
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "Health"
                 ],
                 "summary": "Verifica se a API está online",
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/health.Health"
-                        }
+                        "description": "OK"
                     }
                 }
             }
@@ -385,14 +379,6 @@ const docTemplate = `{
                 },
                 "pagination": {
                     "$ref": "#/definitions/dto.PaginationDto"
-                }
-            }
-        },
-        "health.Health": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string"
                 }
             }
         }

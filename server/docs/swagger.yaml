@@ -85,11 +85,6 @@ definitions:
       pagination:
         $ref: '#/definitions/dto.PaginationDto'
     type: object
-  health.Health:
-    properties:
-      status:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact:
@@ -102,13 +97,9 @@ paths:
   /health:
     get:
       description: Retorna o status de funcionamento da API
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/health.Health'
       summary: Verifica se a API está online
       tags:
       - Health
