@@ -1,6 +1,9 @@
-package dto
+package dto_transaction
 
-import "time"
+import (
+	dto_shared "controle_financeiro/src/api/v1/dto/shared"
+	"time"
+)
 
 type TransactionDto struct {
 	ID          uint       `json:"id"`
@@ -15,6 +18,6 @@ type TransactionDto struct {
 }
 
 type TransactionResponseDto struct {
-	Pagination PaginationDto    `json:"pagination"`
-	Data       []TransactionDto `json:"data"`
+	Pagination dto_shared.PaginationDto `json:"pagination"`
+	Data       []TransactionDto         `json:"data"`
 }

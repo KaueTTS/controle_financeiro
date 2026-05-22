@@ -2,9 +2,9 @@ package services_test
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	sqlite_mocks "controle_financeiro/src/repositories/sqlite/mocks"
-	"controle_financeiro/src/services"
+	dto_summary "controle_financeiro/src/api/v1/dto/summary"
+	repositories_mocks "controle_financeiro/src/mocks/repositories"
+	services "controle_financeiro/src/services"
 	"errors"
 	"testing"
 
@@ -14,18 +14,18 @@ import (
 func TestGetSummary(t *testing.T) {
 	t.Run("should return summary", func(t *testing.T) {
 		ctx := context.Background()
-		expectedSummary := dto.SummaryResponseDto{
+		expectedSummary := dto_summary.SummaryResponseDto{
 			Income:  1000,
 			Expense: 500,
 			Balance: 500,
 		}
 
-		mockSummaryRepository := new(sqlite_mocks.SummaryRepositoryMock)
-		mockSummaryRepository.On("GetSummary", ctx).Return(expectedSummary, nil)
+		mockSummaryRepository := new(repositories_mocks.SummaryRepositoryMock)
+		mockSummaryRepository.On("GetSummary", ctx, dto_summary.SummaryFilterDto{}).Return(expectedSummary, nil)
 
 		service := services.NewSummaryService(mockSummaryRepository)
 
-		response, err := service.GetSummary(ctx)
+		response, err := service.GetSummary(ctx, dto_summary.SummaryFilterDto{})
 
 		assert.NoError(t, err)
 		assert.Equal(t, expectedSummary, response)
@@ -36,16 +36,16 @@ func TestGetSummary(t *testing.T) {
 		ctx := context.Background()
 		expectedError := errors.New("repository error")
 
-		mockSummaryRepository := new(sqlite_mocks.SummaryRepositoryMock)
-		mockSummaryRepository.On("GetSummary", ctx).Return(dto.SummaryResponseDto{}, expectedError)
+		mockSummaryRepository := new(repositories_mocks.SummaryRepositoryMock)
+		mockSummaryRepository.On("GetSummary", ctx, dto_summary.SummaryFilterDto{}).Return(dto_summary.SummaryResponseDto{}, expectedError)
 
 		service := services.NewSummaryService(mockSummaryRepository)
 
-		response, err := service.GetSummary(ctx)
+		response, err := service.GetSummary(ctx, dto_summary.SummaryFilterDto{})
 
 		assert.Error(t, err)
 		assert.Equal(t, expectedError, err)
-		assert.Equal(t, dto.SummaryResponseDto{}, response)
+		assert.Equal(t, dto_summary.SummaryResponseDto{}, response)
 		mockSummaryRepository.AssertExpectations(t)
 	})
 }

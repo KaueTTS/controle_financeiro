@@ -1,4 +1,4 @@
-package common
+package shared_constants
 
 const (
 	TransactionTypeIncome  = "income"

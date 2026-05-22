@@ -2,10 +2,10 @@ package services_test
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	"controle_financeiro/src/models"
-	sqlite_mocks "controle_financeiro/src/repositories/sqlite/mocks"
-	"controle_financeiro/src/services"
+	dto_transaction "controle_financeiro/src/api/v1/dto/transaction"
+	repositories_mocks "controle_financeiro/src/mocks/repositories"
+	models "controle_financeiro/src/models"
+	services "controle_financeiro/src/services"
 	"errors"
 	"testing"
 	"time"
@@ -19,7 +19,7 @@ func TestListTransactions(t *testing.T) {
 		createdAt := time.Date(2026, 5, 13, 10, 0, 0, 0, time.UTC)
 		description := "Pagamento mensal"
 
-		filters := dto.FilterDto{
+		filters := dto_transaction.TransactionFilterDto{
 			Page:    1,
 			PerPage: 10,
 		}
@@ -44,7 +44,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("ListTransactions", ctx, filters).Return(transactions, int64(2), nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -70,17 +70,17 @@ func TestListTransactions(t *testing.T) {
 	t.Run("should use default pagination when page and perPage are invalid", func(t *testing.T) {
 		ctx := context.Background()
 
-		inputFilters := dto.FilterDto{
+		inputFilters := dto_transaction.TransactionFilterDto{
 			Page:    0,
 			PerPage: 0,
 		}
 
-		expectedFilters := dto.FilterDto{
+		expectedFilters := dto_transaction.TransactionFilterDto{
 			Page:    1,
 			PerPage: 10,
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("ListTransactions", ctx, expectedFilters).Return([]models.Transaction{}, int64(0), nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -100,17 +100,17 @@ func TestListTransactions(t *testing.T) {
 	t.Run("should limit perPage to 100 when perPage is greater than 100", func(t *testing.T) {
 		ctx := context.Background()
 
-		inputFilters := dto.FilterDto{
+		inputFilters := dto_transaction.TransactionFilterDto{
 			Page:    1,
 			PerPage: 200,
 		}
 
-		expectedFilters := dto.FilterDto{
+		expectedFilters := dto_transaction.TransactionFilterDto{
 			Page:    1,
 			PerPage: 100,
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("ListTransactions", ctx, expectedFilters).Return([]models.Transaction{}, int64(0), nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -127,12 +127,12 @@ func TestListTransactions(t *testing.T) {
 	t.Run("should calculate pageCount correctly when total is not divisible by perPage", func(t *testing.T) {
 		ctx := context.Background()
 
-		filters := dto.FilterDto{
+		filters := dto_transaction.TransactionFilterDto{
 			Page:    1,
 			PerPage: 10,
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("ListTransactions", ctx, filters).Return([]models.Transaction{}, int64(25), nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -150,12 +150,12 @@ func TestListTransactions(t *testing.T) {
 		ctx := context.Background()
 		expectedError := errors.New("repository error")
 
-		filters := dto.FilterDto{
+		filters := dto_transaction.TransactionFilterDto{
 			Page:    1,
 			PerPage: 10,
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("ListTransactions", ctx, filters).Return([]models.Transaction{}, int64(0), expectedError)
 
 		service := services.NewTransactionService(mockRepository)
@@ -164,7 +164,7 @@ func TestListTransactions(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Equal(t, expectedError, err)
-		assert.Equal(t, dto.TransactionResponseDto{}, response)
+		assert.Equal(t, dto_transaction.TransactionResponseDto{}, response)
 
 		mockRepository.AssertExpectations(t)
 	})
@@ -175,7 +175,7 @@ func TestCreateTransaction(t *testing.T) {
 		ctx := context.Background()
 		description := "Pagamento mensal"
 
-		request := dto.TransactionRequestDto{
+		request := dto_transaction.TransactionRequestDto{
 			Title:       "Salário",
 			Description: &description,
 			Amount:      5000,
@@ -191,7 +191,7 @@ func TestCreateTransaction(t *testing.T) {
 			Category:    "Emprego",
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("CreateTransaction", ctx, expectedTransaction).Return(nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -206,7 +206,7 @@ func TestCreateTransaction(t *testing.T) {
 		ctx := context.Background()
 		expectedError := errors.New("repository error")
 
-		request := dto.TransactionRequestDto{
+		request := dto_transaction.TransactionRequestDto{
 			Title:    "Mercado",
 			Amount:   200,
 			Type:     "expense",
@@ -220,7 +220,7 @@ func TestCreateTransaction(t *testing.T) {
 			Category: "Alimentação",
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("CreateTransaction", ctx, expectedTransaction).Return(expectedError)
 
 		service := services.NewTransactionService(mockRepository)
@@ -238,7 +238,7 @@ func TestDeleteTransaction(t *testing.T) {
 		ctx := context.Background()
 		id := uint(1)
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("DeleteTransaction", ctx, id).Return(nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -254,7 +254,7 @@ func TestDeleteTransaction(t *testing.T) {
 		id := uint(1)
 		expectedError := errors.New("repository error")
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("DeleteTransaction", ctx, id).Return(expectedError)
 
 		service := services.NewTransactionService(mockRepository)
@@ -273,7 +273,7 @@ func TestUpdateTransaction(t *testing.T) {
 		id := uint(1)
 		description := "Compra do mês"
 
-		request := dto.TransactionRequestDto{
+		request := dto_transaction.TransactionRequestDto{
 			Title:       "Mercado",
 			Description: &description,
 			Amount:      300,
@@ -289,7 +289,7 @@ func TestUpdateTransaction(t *testing.T) {
 			Category:    "Alimentação",
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("UpdateTransaction", ctx, id, expectedTransaction).Return(nil)
 
 		service := services.NewTransactionService(mockRepository)
@@ -305,7 +305,7 @@ func TestUpdateTransaction(t *testing.T) {
 		id := uint(1)
 		expectedError := errors.New("repository error")
 
-		request := dto.TransactionRequestDto{
+		request := dto_transaction.TransactionRequestDto{
 			Title:    "Mercado",
 			Amount:   300,
 			Type:     "expense",
@@ -319,7 +319,7 @@ func TestUpdateTransaction(t *testing.T) {
 			Category: "Alimentação",
 		}
 
-		mockRepository := new(sqlite_mocks.TransactionRepositoryMock)
+		mockRepository := new(repositories_mocks.TransactionRepositoryMock)
 		mockRepository.On("UpdateTransaction", ctx, id, expectedTransaction).Return(expectedError)
 
 		service := services.NewTransactionService(mockRepository)

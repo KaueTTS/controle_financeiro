@@ -2,7 +2,8 @@ package sqlite_repository_test
 
 import (
 	"context"
-	"controle_financeiro/src/models"
+	dto_summary "controle_financeiro/src/api/v1/dto/summary"
+	models "controle_financeiro/src/models"
 	sqlite_repository "controle_financeiro/src/repositories/sqlite"
 	"testing"
 
@@ -34,7 +35,7 @@ func TestGetSummaryRepository(t *testing.T) {
 		Category: "Alimentação",
 	})
 
-	response, err := repository.GetSummary(context.Background())
+	response, err := repository.GetSummary(context.Background(), dto_summary.SummaryFilterDto{})
 
 	assert.NoError(t, err)
 	assert.Equal(t, float64(6000), response.Income)

@@ -24,6 +24,7 @@ function App() {
     transactions,
     summary,
     filters,
+    pagination,
     categories,
     isLoading,
     isDeleting,
@@ -141,8 +142,10 @@ function App() {
 
         <TransactionsTable
           transactions={transactions}
+          pagination={pagination}
           isLoading={isLoading}
           hasActiveFilters={hasActiveFilters}
+          onPageChange={(page) => setFilters({ ...filters, page })}
           onEdit={openEditModal}
           onRequestDelete={setTransactionToDelete}
         />

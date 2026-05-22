@@ -2,25 +2,26 @@ package services
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	"controle_financeiro/src/models"
-	repository_interfaces "controle_financeiro/src/repositories/sqlite/interfaces"
+	dto_shared "controle_financeiro/src/api/v1/dto/shared"
+	dto_transaction "controle_financeiro/src/api/v1/dto/transaction"
+	models "controle_financeiro/src/models"
+	repository_interfaces "controle_financeiro/src/repositories/interfaces"
 	"time"
 )
 
 type TransactionService struct {
-	SqliteTransactionRepositoryInterface repository_interfaces.SqliteTransactionRepositoryInterface
+	TransactionRepositoryInterface repository_interfaces.TransactionRepositoryInterface
 }
 
 func NewTransactionService(
-	sqliteTransactionRepository repository_interfaces.SqliteTransactionRepositoryInterface,
+	transactionRepository repository_interfaces.TransactionRepositoryInterface,
 ) *TransactionService {
 	return &TransactionService{
-		SqliteTransactionRepositoryInterface: sqliteTransactionRepository,
+		TransactionRepositoryInterface: transactionRepository,
 	}
 }
 
-func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.FilterDto) (dto.TransactionResponseDto, error) {
+func (s *TransactionService) ListTransactions(ctx context.Context, filters dto_transaction.TransactionFilterDto) (dto_transaction.TransactionResponseDto, error) {
 	if filters.Page <= 0 {
 		filters.Page = 1
 	}
@@ -33,19 +34,19 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.F
 		filters.PerPage = 100
 	}
 
-	transactionModel, total, err := s.SqliteTransactionRepositoryInterface.ListTransactions(ctx, filters)
+	transactionModel, total, err := s.TransactionRepositoryInterface.ListTransactions(ctx, filters)
 	if err != nil {
-		return dto.TransactionResponseDto{}, err
+		return dto_transaction.TransactionResponseDto{}, err
 	}
 
-	transactions := make([]dto.TransactionDto, 0, len(transactionModel))
+	transactions := make([]dto_transaction.TransactionDto, 0, len(transactionModel))
 	for _, transaction := range transactionModel {
 		var deletedAt *time.Time
 		if transaction.DeletedAt.Valid {
 			deletedAt = &transaction.DeletedAt.Time
 		}
 
-		transactions = append(transactions, dto.TransactionDto{
+		transactions = append(transactions, dto_transaction.TransactionDto{
 			ID:          transaction.ID,
 			Title:       transaction.Title,
 			Description: transaction.Description,
@@ -63,8 +64,8 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.F
 		pageCount++
 	}
 
-	return dto.TransactionResponseDto{
-		Pagination: dto.PaginationDto{
+	return dto_transaction.TransactionResponseDto{
+		Pagination: dto_shared.PaginationDto{
 			Page:      filters.Page,
 			PerPage:   filters.PerPage,
 			PageCount: pageCount,
@@ -74,7 +75,7 @@ func (s *TransactionService) ListTransactions(ctx context.Context, filters dto.F
 	}, nil
 }
 
-func (s *TransactionService) CreateTransaction(ctx context.Context, request dto.TransactionRequestDto) error {
+func (s *TransactionService) CreateTransaction(ctx context.Context, request dto_transaction.TransactionRequestDto) error {
 	transaction := models.Transaction{
 		Title:       request.Title,
 		Description: request.Description,
@@ -83,14 +84,14 @@ func (s *TransactionService) CreateTransaction(ctx context.Context, request dto.
 		Category:    request.Category,
 	}
 
-	return s.SqliteTransactionRepositoryInterface.CreateTransaction(ctx, transaction)
+	return s.TransactionRepositoryInterface.CreateTransaction(ctx, transaction)
 }
 
 func (s *TransactionService) DeleteTransaction(ctx context.Context, id uint) error {
-	return s.SqliteTransactionRepositoryInterface.DeleteTransaction(ctx, id)
+	return s.TransactionRepositoryInterface.DeleteTransaction(ctx, id)
 }
 
-func (s *TransactionService) UpdateTransaction(ctx context.Context, id uint, request dto.TransactionRequestDto) error {
+func (s *TransactionService) UpdateTransaction(ctx context.Context, id uint, request dto_transaction.TransactionRequestDto) error {
 	transaction := models.Transaction{
 		Title:       request.Title,
 		Description: request.Description,
@@ -99,5 +100,5 @@ func (s *TransactionService) UpdateTransaction(ctx context.Context, id uint, req
 		Category:    request.Category,
 	}
 
-	return s.SqliteTransactionRepositoryInterface.UpdateTransaction(ctx, id, transaction)
+	return s.TransactionRepositoryInterface.UpdateTransaction(ctx, id, transaction)
 }

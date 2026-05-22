@@ -1,4 +1,4 @@
-package errors
+package shared_errors
 
 import "errors"
 

@@ -1,4 +1,4 @@
-package errors
+package shared_errors
 
 const (
 	BadRequest          = "BAD_REQUEST"

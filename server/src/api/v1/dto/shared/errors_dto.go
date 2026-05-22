@@ -1,4 +1,4 @@
-package dto
+package dto_shared
 
 type ErrorDto struct {
 	Message     string           `json:"message"`

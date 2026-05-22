@@ -8,10 +8,12 @@ import (
 )
 
 var (
-	Port               string
-	AppEnv             string
-	DatabaseURL        string
-	FrontendCorsOrigin string
+	Port        string
+	AppEnv      string
+	DatabaseURL string
+	CorsOrigin  string
+	CorsMethod  string
+	CorsHeader  string
 )
 
 func Init() error {
@@ -27,9 +29,19 @@ func Init() error {
 		AppEnv = "development"
 	}
 
-	FrontendCorsOrigin = os.Getenv("FRONTEND_CORS_ORIGIN")
-	if FrontendCorsOrigin == "" {
-		FrontendCorsOrigin = "*"
+	CorsOrigin = os.Getenv("CORS_ORIGIN")
+	if CorsOrigin == "" {
+		CorsOrigin = "*"
+	}
+
+	CorsMethod = os.Getenv("CORS_METHOD")
+	if CorsMethod == "" {
+		CorsMethod = "*"
+	}
+
+	CorsHeader = os.Getenv("CORS_HEADER")
+	if CorsHeader == "" {
+		CorsHeader = "*"
 	}
 
 	DatabaseURL = os.Getenv("DATABASE_URL")

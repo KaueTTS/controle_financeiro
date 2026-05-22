@@ -174,6 +174,22 @@ time {
   animation: loading 1.2s ease-in-out infinite;
 }
 
+.pagination-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.pagination-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
 @keyframes loading {
   from {
     background-position: 220% 0;

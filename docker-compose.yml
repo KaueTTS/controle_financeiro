@@ -6,7 +6,7 @@ services:
     environment:
       PORT: 8080
       DATABASE_URL: /app/data/transactions.db
-      FRONTEND_CORS_ORIGIN: http://localhost:5173
+      CORS_ORIGIN: http://localhost:5173
     ports:
       - "8080:8080"
     volumes:

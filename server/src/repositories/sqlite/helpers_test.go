@@ -1,7 +1,7 @@
 package sqlite_repository_test
 
 import (
-	"controle_financeiro/src/models"
+	models "controle_financeiro/src/models"
 	"testing"
 
 	"github.com/glebarez/sqlite"

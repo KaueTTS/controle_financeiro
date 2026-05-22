@@ -22,4 +22,6 @@ export interface TransactionFilters {
   search: string;
   type: '' | TransactionType;
   category: string;
+  page: number;
+  perPage: number;
 }

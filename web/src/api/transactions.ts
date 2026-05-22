@@ -1,17 +1,17 @@
 import { httpClient } from './http';
-import type { ApiDataResponse, ApiMessageResponse } from '../types/api';
+import type { ApiMessageResponse, PaginatedApiResponse } from '../types/api';
 import type { Transaction, TransactionFilters, TransactionPayload } from '../types/transaction';
 
 export async function listTransactions(filters: TransactionFilters) {
-  const response = await httpClient<ApiDataResponse<Transaction[]>>('/v1/transactions', {
+  return httpClient<PaginatedApiResponse<Transaction[]>>('/v1/transactions', {
     query: {
       search: filters.search,
       type: filters.type,
       category: filters.category,
+      page: filters.page,
+      perPage: filters.perPage,
     },
   });
-
-  return response.data;
 }
 
 export async function createTransaction(payload: TransactionPayload) {

@@ -2,10 +2,10 @@ package sqlite_repository_test
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	"controle_financeiro/src/models"
+	dto_transaction "controle_financeiro/src/api/v1/dto/transaction"
+	models "controle_financeiro/src/models"
 	sqlite_repository "controle_financeiro/src/repositories/sqlite"
-	utils_errors "controle_financeiro/src/utils/errors"
+	shared_errors "controle_financeiro/src/shared/errors"
 	"errors"
 	"testing"
 
@@ -54,7 +54,7 @@ func TestListTransactionsRepository(t *testing.T) {
 		Category: "Trabalho",
 	})
 
-	filters := dto.FilterDto{
+	filters := dto_transaction.TransactionFilterDto{
 		Search:   "Mercado",
 		Type:     "expense",
 		Category: "Alimentação",
@@ -103,7 +103,7 @@ func TestDeleteTransactionRepository(t *testing.T) {
 		err := repository.DeleteTransaction(context.Background(), 999)
 
 		assert.Error(t, err)
-		assert.True(t, errors.Is(err, utils_errors.ErrTransactionNotFound))
+		assert.True(t, errors.Is(err, shared_errors.ErrTransactionNotFound))
 	})
 }
 

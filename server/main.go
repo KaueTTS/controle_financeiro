@@ -16,7 +16,7 @@ import (
 // @description API do sistema de controle financeiro
 
 // @contact.name KauêTTS
-// @contact.email kauebertaze2004@gmai.com
+// @contact.url https://github.com/KaueTTS
 
 // @accept json
 // @produce json

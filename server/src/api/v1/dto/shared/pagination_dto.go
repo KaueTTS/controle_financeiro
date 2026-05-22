@@ -1,4 +1,4 @@
-package dto
+package dto_shared
 
 type PaginationDto struct {
 	Page      int   `json:"page"`

@@ -2,20 +2,20 @@ package services
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	repository_interfaces "controle_financeiro/src/repositories/sqlite/interfaces"
+	dto_summary "controle_financeiro/src/api/v1/dto/summary"
+	repository_interfaces "controle_financeiro/src/repositories/interfaces"
 )
 
 type SummaryService struct {
-	SqliteSummaryRepositoryInterface repository_interfaces.SqliteSummaryRepositoryInterface
+	SummaryRepositoryInterface repository_interfaces.SummaryRepositoryInterface
 }
 
-func NewSummaryService(sqliteSummaryRepositoryInterface repository_interfaces.SqliteSummaryRepositoryInterface) *SummaryService {
+func NewSummaryService(summaryRepositoryInterface repository_interfaces.SummaryRepositoryInterface) *SummaryService {
 	return &SummaryService{
-		SqliteSummaryRepositoryInterface: sqliteSummaryRepositoryInterface,
+		SummaryRepositoryInterface: summaryRepositoryInterface,
 	}
 }
 
-func (s *SummaryService) GetSummary(ctx context.Context) (dto.SummaryResponseDto, error) {
-	return s.SqliteSummaryRepositoryInterface.GetSummary(ctx)
+func (s *SummaryService) GetSummary(ctx context.Context, filters dto_summary.SummaryFilterDto) (dto_summary.SummaryResponseDto, error) {
+	return s.SummaryRepositoryInterface.GetSummary(ctx, filters)
 }

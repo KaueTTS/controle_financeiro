@@ -2,9 +2,9 @@ package sqlite_repository
 
 import (
 	"context"
-	"controle_financeiro/src/api/v1/dto"
-	"controle_financeiro/src/models"
-	utils_errors "controle_financeiro/src/utils/errors"
+	dto_transaction "controle_financeiro/src/api/v1/dto/transaction"
+	models "controle_financeiro/src/models"
+	shared_errors "controle_financeiro/src/shared/errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,7 +20,7 @@ func NewTransactionRepository(db *gorm.DB) *TransactionRepository {
 	}
 }
 
-func (r *TransactionRepository) ListTransactions(ctx context.Context, filters dto.FilterDto) ([]models.Transaction, int64, error) {
+func (r *TransactionRepository) ListTransactions(ctx context.Context, filters dto_transaction.TransactionFilterDto) ([]models.Transaction, int64, error) {
 	var transactions []models.Transaction
 	var total int64
 
@@ -73,7 +73,7 @@ func (r *TransactionRepository) DeleteTransaction(ctx context.Context, id uint) 
 	}
 
 	if result.RowsAffected == 0 {
-		return utils_errors.ErrTransactionNotFound
+		return shared_errors.ErrTransactionNotFound
 	}
 
 	return nil
@@ -97,7 +97,7 @@ func (r *TransactionRepository) UpdateTransaction(ctx context.Context, id uint, 
 	}
 
 	if result.RowsAffected == 0 {
-		return utils_errors.ErrTransactionNotFound
+		return shared_errors.ErrTransactionNotFound
 	}
 
 	return nil

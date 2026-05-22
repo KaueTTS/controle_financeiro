@@ -1,4 +1,4 @@
-package dto
+package dto_transaction
 
 type TransactionRequestDto struct {
 	Title       string  `json:"title"`
