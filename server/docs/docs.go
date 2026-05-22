@@ -17,7 +17,7 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {
             "name": "KauêTTS",
-            "email": "kauebertaze2004@gmai.com"
+            "url": "https://github.com/KaueTTS"
         },
         "version": "{{.Version}}"
     },
@@ -45,11 +45,41 @@ const docTemplate = `{
                     "Summary"
                 ],
                 "summary": "Retorna o resumo financeiro",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Buscar por título ou descrição",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "income",
+                            "expense"
+                        ],
+                        "type": "string",
+                        "description": "Tipo da transação",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Categoria da transação",
+                        "name": "category",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto_summary.SummaryResponseDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto_shared.ErrorDto"
                         }
                     },
                     "500": {

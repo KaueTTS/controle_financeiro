@@ -88,8 +88,8 @@ definitions:
 host: localhost:8080
 info:
   contact:
-    email: kauebertaze2004@gmai.com
     name: KauêTTS
+    url: https://github.com/KaueTTS
   description: API do sistema de controle financeiro
   title: Controle Financeiro API
   version: "1.0"
@@ -106,11 +106,31 @@ paths:
   /v1/summary:
     get:
       description: Cálculo automático de entradas, saídas e saldo total
+      parameters:
+      - description: Buscar por título ou descrição
+        in: query
+        name: search
+        type: string
+      - description: Tipo da transação
+        enum:
+        - income
+        - expense
+        in: query
+        name: type
+        type: string
+      - description: Categoria da transação
+        in: query
+        name: category
+        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/dto_summary.SummaryResponseDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto_shared.ErrorDto'
         "500":
           description: Internal Server Error
           schema:
