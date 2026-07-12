@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Error 400
 func BadRequest(ctx *fiber.Ctx, message string, details []dto_shared.DetailErrorDto) error {
 	return ctx.Status(fiber.StatusBadRequest).JSON(dto_shared.ErrorDto{
 		Message:     message,
@@ -15,6 +16,7 @@ func BadRequest(ctx *fiber.Ctx, message string, details []dto_shared.DetailError
 	})
 }
 
+// Error 404
 func NotFound(ctx *fiber.Ctx, message string) error {
 	return ctx.Status(fiber.StatusNotFound).JSON(dto_shared.ErrorDto{
 		Message:     message,
@@ -22,6 +24,7 @@ func NotFound(ctx *fiber.Ctx, message string) error {
 	})
 }
 
+// Error 500
 func InternalServerError(ctx *fiber.Ctx, message string) error {
 	return ctx.Status(fiber.StatusInternalServerError).JSON(dto_shared.ErrorDto{
 		Message:     message,

@@ -1,9 +1,11 @@
 package dto_transaction
 
 type TransactionFilterDto struct {
-	Search   string `query:"search"`
-	Type     string `query:"type"`
-	Category string `query:"category"`
-	Page     int    `query:"page"`
-	PerPage  int    `query:"perPage"`
+	Search         string `query:"search"`
+	Type           string `query:"type"`
+	Category       string `query:"category"`
+	Page           int    `query:"page"`
+	PerPage        int    `query:"perPage"`
+	OrderBy        string `query:"orderBy"`
+	OrderDirection string `query:"orderDirection"`
 }

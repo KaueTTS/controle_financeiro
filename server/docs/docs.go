@@ -134,6 +134,18 @@ const docTemplate = `{
                         "description": "Quantidade de registros por página",
                         "name": "perPage",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Ordernar por",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Direção da ordenagem",
+                        "name": "orderDirection",
+                        "in": "query"
                     }
                 ],
                 "responses": {

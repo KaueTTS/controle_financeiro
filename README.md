@@ -1,11 +1,11 @@
 <h1 align="center">Controle Financeiro</h1>
 
 <p align="center">
-<img loading="lazy" src="https://img.shields.io/static/v1?label=STATUS&message=EM%20ANDAMENTO&color=blue&style=for-the-badge"/>
+<img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=CONCLUIDO&color=green&style=for-the-badge"/>
 </p>
 
 > [!IMPORTANT]
-> *Esse projeto está em andamento.*
+> *Esse projeto está concluído.*
 
 ### Tópicos
 
@@ -19,9 +19,11 @@
 
 ## Descrição do projeto
 
-O Controle Financeiro é uma aplicação web para gerenciamento de receitas e despesas pessoais.
+O **Controle Financeiro** é uma aplicação Full Stack desenvolvida para auxiliar usuários no gerenciamento de receitas e despesas pessoais.
 
-A aplicação permite que usuários registrem, visualizem e analisem suas transações financeiras, facilitando o controle do fluxo de caixa e a tomada de decisões financeiras.
+O sistema oferece uma interface simples e intuitiva para cadastro de movimentações financeiras, além de disponibilizar um resumo em tempo real do fluxo de caixa, permitindo um acompanhamento eficiente da saúde financeira.
+
+O projeto foi desenvolvido com foco em boas práticas de arquitetura, separação de responsabilidades, testes automatizados e documentação da API.
 
 ### Funcionalidades Principais
 > ***Listar transações:*** Visualização completa das movimentações financeiras cadastradas. <br>
@@ -65,21 +67,62 @@ O design do site é responsivo e intuitivo, permitindo que usuários de qualquer
 
 ## Arquitetura
 
-Back-End:
+***Back-End:***
+```
+src
+├── api
+│   ├── routes
+│   └── v1
+│       ├── controllers
+│       ├── dto
+│       ├── validators
+│       └── responses
+├── services
+├── repositories
+├── models
+├── config
+└── shared
+```
 
-- Controller -> recebe requisições HTTP 
-- Service -> regras de negócio
-- Repository -> acesso a dados e APIs
-- DTOs -> transporte de dados entre camadas
-- Models -> representação das entidades
-- Config ->
+| Camada     | Responsabilidade                                                                       |
+| ---------- | -------------------------------------------------------------------------------------- |
+| Routes     | Define os endpoints da API e realiza o mapeamento das rotas                            |
+| Controller | Recebe as requisições HTTP, valida a entrada e delega o processamento para os serviços |
+| DTO        | Objetos de entrada e saída de dados da API                                             |
+| Validators | Centraliza as regras de validação das requisições                                      |
+| Responses  | Padroniza as respostas retornadas pela API                                             |
+| Service    | Implementa regras de negócio da aplicação                                              |
+| Repository | Responsável pelo acesso e persistência dos dados no banco                              |
+| Models     | Representa as entidades do domínio                                                     |
+| Config     | Configurações da aplicação, banco de dados e variáveis de ambiente                     |
+| Shared     | Código compartilhado entre módulos, como utilitários, constantes, middlewares e helpers|
 
-Front-End:
+<br>
 
-- Components -> componentes reutilizáveis
-- Hooks -> 
-- Styles -> estilizações
+***Front-End:***
+```
+src
+├── api
+├── assets
+├── components
+├── hooks
+├── pages
+├── styles
+├── types
+├── utils
+└── main.tsx
+```
 
+| Camada     | Responsabilidade                                                      |
+| ---------- | --------------------------------------------------------------------- |
+| API        | Comunicação com a API do backend                                      |
+| Assets     | Imagens, ícones e arquivos estáticos                                  |
+| Components | Componentes reutilizáveis da interface                                |
+| Hooks      | Hooks customizados utilizados pela aplicação                          |
+| Pages      | Páginas que representam as telas do sistema                           |
+| Styles     | Estilos globais e específicos da aplicação                            |
+| Types      | Tipagens compartilhadas do TypeScript                                 |
+| Utils      | Funções utilitárias reutilizadas em diferentes partes do projeto      |
 
 ## Projeto em funcionamento
 

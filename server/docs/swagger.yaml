@@ -167,6 +167,14 @@ paths:
         in: query
         name: perPage
         type: integer
+      - description: Ordernar por
+        in: query
+        name: orderBy
+        type: string
+      - description: Direção da ordenagem
+        in: query
+        name: orderDirection
+        type: string
       responses:
         "200":
           description: OK

@@ -1,7 +1,5 @@
 .env
-prompt.txt
-teste_tecnico.md
-readme_old.md
-node_modules
-transactions.db
+node_modules/
+data/
 coverage.out
+__debug_bin.exe

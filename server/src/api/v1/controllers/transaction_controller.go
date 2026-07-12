@@ -34,6 +34,8 @@ func NewTransactionController(transactionService services_interfaces.Transaction
 // @Param category query string false "Categoria da transação"
 // @Param page query int false "Página atual" default(1)
 // @Param perPage query int false "Quantidade de registros por página" default(10)
+// @Param orderBy query string false "Ordernar por"
+// @Param orderDirection query string false "Direção da ordenagem"
 // @Success 200 {object} dto_transaction.TransactionResponseDto
 // @Failure 400 {object} dto_shared.ErrorDto
 // @Failure 500 {object} dto_shared.ErrorDto
