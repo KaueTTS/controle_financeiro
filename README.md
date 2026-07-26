@@ -5,7 +5,7 @@
 </p>
 
 > [!IMPORTANT]
-> *Esse projeto está concluído.*
+> _Esse projeto está concluído._
 
 ### Tópicos
 
@@ -26,12 +26,13 @@ O sistema oferece uma interface simples e intuitiva para cadastro de movimentaç
 O projeto foi desenvolvido com foco em boas práticas de arquitetura, separação de responsabilidades, testes automatizados e documentação da API.
 
 ### Funcionalidades Principais
-> ***Listar transações:*** Visualização completa das movimentações financeiras cadastradas. <br>
-> ***Criar transações:*** Cadastro de receitas e despesas. <br>
-> ***Deletar transações:*** Remoção de transações cadastradas. <br>
-> ***Editar transações:*** Atualização de informações das transações. <br>
-> ***Resumo financeiro:*** Cálculo automático de entradas, saídas e saldo total. <br>
-> ***Paginação e filtros:*** Busca e navegação otimizada entre transações.
+
+> **_Listar transações:_** Visualização completa das movimentações financeiras cadastradas. <br>
+> **_Criar transações:_** Cadastro de receitas e despesas. <br>
+> **_Deletar transações:_** Remoção de transações cadastradas. <br>
+> **_Editar transações:_** Atualização de informações das transações. <br>
+> **_Resumo financeiro:_** Cálculo automático de entradas, saídas e saldo total. <br>
+> **_Paginação e filtros:_** Busca e navegação otimizada entre transações.
 
 O design do site é responsivo e intuitivo, permitindo que usuários de qualquer dispositivo acessem as informações de maneira rápida e eficiente.
 
@@ -67,7 +68,8 @@ O design do site é responsivo e intuitivo, permitindo que usuários de qualquer
 
 ## Arquitetura
 
-***Back-End:***
+**_Back-End:_**
+
 ```
 src
 ├── api
@@ -84,22 +86,23 @@ src
 └── shared
 ```
 
-| Camada     | Responsabilidade                                                                       |
-| ---------- | -------------------------------------------------------------------------------------- |
-| Routes     | Define os endpoints da API e realiza o mapeamento das rotas                            |
-| Controller | Recebe as requisições HTTP, valida a entrada e delega o processamento para os serviços |
-| DTO        | Objetos de entrada e saída de dados da API                                             |
-| Validators | Centraliza as regras de validação das requisições                                      |
-| Responses  | Padroniza as respostas retornadas pela API                                             |
-| Service    | Implementa regras de negócio da aplicação                                              |
-| Repository | Responsável pelo acesso e persistência dos dados no banco                              |
-| Models     | Representa as entidades do domínio                                                     |
-| Config     | Configurações da aplicação, banco de dados e variáveis de ambiente                     |
-| Shared     | Código compartilhado entre módulos, como utilitários, constantes, middlewares e helpers|
+| Camada     | Responsabilidade                                                                        |
+| ---------- | --------------------------------------------------------------------------------------- |
+| Routes     | Define os endpoints da API e realiza o mapeamento das rotas                             |
+| Controller | Recebe as requisições HTTP, valida a entrada e delega o processamento para os serviços  |
+| DTO        | Objetos de entrada e saída de dados da API                                              |
+| Validators | Centraliza as regras de validação das requisições                                       |
+| Responses  | Padroniza as respostas retornadas pela API                                              |
+| Service    | Implementa regras de negócio da aplicação                                               |
+| Repository | Responsável pelo acesso e persistência dos dados no banco                               |
+| Models     | Representa as entidades do domínio                                                      |
+| Config     | Configurações da aplicação, banco de dados e variáveis de ambiente                      |
+| Shared     | Código compartilhado entre módulos, como utilitários, constantes, middlewares e helpers |
 
 <br>
 
-***Front-End:***
+**_Front-End:_**
+
 ```
 src
 ├── api
@@ -113,22 +116,22 @@ src
 └── main.tsx
 ```
 
-| Camada     | Responsabilidade                                                      |
-| ---------- | --------------------------------------------------------------------- |
-| API        | Comunicação com a API do backend                                      |
-| Assets     | Imagens, ícones e arquivos estáticos                                  |
-| Components | Componentes reutilizáveis da interface                                |
-| Hooks      | Hooks customizados utilizados pela aplicação                          |
-| Pages      | Páginas que representam as telas do sistema                           |
-| Styles     | Estilos globais e específicos da aplicação                            |
-| Types      | Tipagens compartilhadas do TypeScript                                 |
-| Utils      | Funções utilitárias reutilizadas em diferentes partes do projeto      |
+| Camada     | Responsabilidade                                                 |
+| ---------- | ---------------------------------------------------------------- |
+| API        | Comunicação com a API do backend                                 |
+| Assets     | Imagens, ícones e arquivos estáticos                             |
+| Components | Componentes reutilizáveis da interface                           |
+| Hooks      | Hooks customizados utilizados pela aplicação                     |
+| Pages      | Páginas que representam as telas do sistema                      |
+| Styles     | Estilos globais e específicos da aplicação                       |
+| Types      | Tipagens compartilhadas do TypeScript                            |
+| Utils      | Funções utilitárias reutilizadas em diferentes partes do projeto |
 
 ## Projeto em funcionamento
 
 Clique na imagem abaixo para assistir ao tutorial em vídeo!
 
-[![Assista ao tutorial](image.png "Como utilizar esse projeto na sua máquina")](semvideo.com)
+[![Assista ao tutorial](./images/controle_financeiro.png "Como utilizar esse projeto na sua máquina")](semvideo.com)
 
 **Descrição**: Este vídeo cobre todo o processo para visualizar o projeto em funcionamento, do início ao fim.
 
